@@ -1,0 +1,7 @@
+{
+  "name": "reserva-system-frontend",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

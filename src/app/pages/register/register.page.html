@@ -1,0 +1,53 @@
+<ion-header [translucent]="false">
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <h1 class="ion-text-center ion-padding-bottom">Reserva</h1>
+
+  <section class="container-max">
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="6" class="ion-padding-horizontal bg-img">
+        <img src="" alt="" srcset="">
+      </ion-col>
+      <ion-col size="6" class="ion-padding-horizontal">
+
+        <form [formGroup]="registerForm" novalidate class="wrapper">
+          <h2>Cadastrar</h2>
+          <ion-input class="ion-margin-vertical" placeholder="nome ou instituição..." formControlName="nome" fill="outline"
+          errorText="Digite um nome válido">
+          <span *ngIf="registerForm.controls.nome.hasError('required')" slot="end" class="error-log">Nome é obrigatório</span>
+          </ion-input>
+
+          <ion-input class="ion-margin-vertical" placeholder="seu melhor email..." formControlName="email" fill="outline"
+          errorText="Insira um e-mail válido">
+          <span *ngIf="registerForm.controls.email.hasError('required')" slot="end" class="error-log">Email é obrigatório</span>
+          <span *ngIf="registerForm.controls.email.hasError('emailAlreadyExists')" slot="end" class="error-log">Email já cadastrado</span>
+          </ion-input>
+
+          <ion-input class="ion-margin-vertical" placeholder="seu telefone..." formControlName="telefone" fill="outline"
+          errorText="Insira um telefone válido"
+          [maskito]="phoneMask"
+          [maskitoElement]="maskPredicate">
+          </ion-input>
+
+          <ion-input class="ion-margin-vertical"  placeholder="digite uma senha..." formControlName="senha" [type]="passwordShow" fill="outline"
+          errorText="Senha precisa ter no mínimo 6 caracteres">
+          <span *ngIf="registerForm.controls.senha.hasError('required')" slot="end" class="error-log">Senha é obrigatório</span>
+          <ion-icon [name]="iconShow" size="large" slot="end" (click)="showPassword()"></ion-icon>
+          </ion-input>
+
+          <ion-input class="ion-margin-vertical" placeholder="confirme a senha..." formControlName="confirmarSenha" [type]="passwordShow" fill="outline"
+          errorText="As senhas devem ser idênticas" *ngIf="registerForm.controls.senha.valid">
+          <ion-icon [name]="iconShow" size="large" slot="end" (click)="showPassword()"></ion-icon>
+          </ion-input>
+
+          <ion-button type="submit" fill="outline" color="primary" expand="block" class="ion-padding-vertical btn-submit" [disabled]="!registerForm.valid">Cadastrar</ion-button>
+
+        </form>
+
+      </ion-col>
+    </ion-row>
+  </section>
+
+</ion-content>
