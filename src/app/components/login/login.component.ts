@@ -39,7 +39,7 @@ export class LoginComponent  implements OnInit {
   }
 
   onLogin(): void {
-    location.href='/oauth2/authorization/gateway?'
+    location.href='http://127.0.0.1:8081/oauth2/authorization/gateway?'
     //window.location.href = '/oauth2/authorization/gateway';
     //window.location.href = 'http://127.0.0.1:8081/oauth2/authorization/gateway';
   }

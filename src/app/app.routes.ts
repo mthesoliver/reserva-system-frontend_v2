@@ -14,7 +14,7 @@ export const routes: Routes = [
     path: 'register',
     loadComponent: () => import('./pages/register/register.page').then( m => m.RegisterPage)
   },
-  { path: 'login/oauth2/code/gateway?', component: AuthorizedComponent },
+  { path: 'authorized', component: AuthorizedComponent },
   { path: 'user', component: UserComponent , 
 },
   { path: 'admin', component: AdminComponent, 

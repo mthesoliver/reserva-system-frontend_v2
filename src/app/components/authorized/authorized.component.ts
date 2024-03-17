@@ -17,7 +17,6 @@ export class AuthorizedComponent  implements OnInit {
 
   ngOnInit():void {
     alert('break')
-    location.href='/login/oauth2/code/gateway'
   }
 
 }

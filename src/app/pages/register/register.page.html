@@ -20,13 +20,14 @@
           </ion-input>
 
           <ion-input class="ion-margin-vertical" placeholder="seu melhor email..." formControlName="email" fill="outline"
-          errorText="Insira um e-mail válido">
+          errorText="Digite um email válido" type="email">
           <span *ngIf="registerForm.controls.email.hasError('required')" slot="end" class="error-log">Email é obrigatório</span>
+          <span *ngIf="registerForm.controls.email.hasError('email')" slot="end" class="error-log">Digite um email válido</span>
           <span *ngIf="registerForm.controls.email.hasError('emailAlreadyExists')" slot="end" class="error-log">Email já cadastrado</span>
           </ion-input>
 
           <ion-input class="ion-margin-vertical" placeholder="seu telefone..." formControlName="telefone" fill="outline"
-          errorText="Insira um telefone válido"
+          errorText="Digite um telefone válido"
           [maskito]="phoneMask"
           [maskitoElement]="maskPredicate">
           </ion-input>
