@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ResourceService {
 
-  resourceUrl = environment.resource_url;
+  private resourceUrl = environment.resource_url;
 
   constructor(private httpClient: HttpClient) { }
 
@@ -20,15 +20,23 @@ export class ResourceService {
     return this.httpClient.get<any>(this.resourceUrl + 'admin');
   }
 
-  public userTwo(): Observable<any>{
-    return this.httpClient.get<any>('/resource/user')
-  }
-
-  public adminTwo(): Observable<any>{
-    return this.httpClient.get<any>('/resource/admin')
-  }
-
   public logged():Observable<any>{
     return this.httpClient.get<any>('/resource/logged').pipe(first());
+  }
+
+  public currentUser():Observable<any>{
+    return this.httpClient.get<any>('/resource/currentUser').pipe(first());
+  }
+
+  public setUserRoleToStorage(role){
+    localStorage.setItem('role', role);
+  }
+
+  public getUserRoleToStorage(){
+    localStorage.getItem('role');
+  }
+
+  public clearUserRoleToStorage(){
+    localStorage.removeItem('role');
   }
 }

@@ -1,0 +1,54 @@
+.bg-color{
+    background-color: #F2F2F2;
+}
+
+.profile-img{
+    max-width:160px ;
+    max-height: 160px;
+    border-radius: 50%;
+}
+
+.info-list{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    
+    h4{
+        color: var(--ion-color-primary);
+        font-size: var(--font-lg);
+        font-weight: 800;
+        line-height: calc(var(--font-lg) - 1rem);
+    }
+
+    p{
+        font-size:var(--font-md);
+        line-height: calc(var(--font-lg) - 2rem);
+    }
+
+    a{
+        text-decoration: none;
+    }
+}
+
+.info-buttons{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: end;
+}
+
+
+/** media **/
+@media screen and (max-width:768px){
+    .info-list{
+        display: flex;
+        align-items: center;
+    }
+
+    .info-buttons{
+        display: flex;
+        align-items: center;
+    }
+}
+

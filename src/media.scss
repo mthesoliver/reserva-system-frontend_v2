@@ -1,0 +1,12 @@
+@media screen and (max-width:768px){
+    ion-grid{
+        max-width: 90vw;
+    }
+
+    .media-container{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+}

@@ -4,6 +4,7 @@ import { UserComponent } from './components/user/user.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { LoginComponent } from './components/login/login.component';
+import { IsAdminGuard } from './pages/admin-dashboard/guard/is-admin.guard';
 
 export const routes: Routes = [
   { 
@@ -15,11 +16,15 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/register/register.page').then( m => m.RegisterPage)
   },
   { path: 'authorized', component: AuthorizedComponent },
-  { path: 'user', component: UserComponent , 
-},
-  { path: 'admin', component: AdminComponent, 
-},
+  { path: 'user', component: UserComponent , },
+  { path: 'admin', component: AdminComponent, canActivate: [IsAdminGuard]},
+  {
+    path: 'admin/dashboard',
+    loadComponent: () => import('./pages/admin-dashboard/admin-dashboard.page').then( m => m.AdminDashboardPage),
+    canActivate: [IsAdminGuard]
+  },
   { path: 'logout', component: LogoutComponent },
   { path: 'login', component: LoginComponent },
-  { path: '**', redirectTo: 'home', pathMatch: 'full' }
+  { path: '**', redirectTo: 'home', pathMatch: 'full' },
+  
 ];

@@ -10,6 +10,8 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
   ],
   exports:[
     HttpClientModule
+  ],
+  providers:[
   ]
 })
 export class HttpModuleModule { }

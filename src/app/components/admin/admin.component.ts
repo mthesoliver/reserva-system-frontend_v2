@@ -30,7 +30,7 @@ export class AdminComponent  implements OnInit {
   }
 
   admin():void{
-    this.resourceService.adminTwo().subscribe({
+    this.resourceService.admin().subscribe({
       next: (res: any) => (this.msgAdmin = res.message),
       error: (err: any) =>  (this.msgAdmin = err.statusText + ': ' + err.status)
     })

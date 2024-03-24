@@ -24,10 +24,11 @@
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
+@import "./media.scss";
 
 
 .container{
-    max-width: 1440px;
+    max-width: 1080px;
     margin: auto;
 }
 
@@ -42,3 +43,17 @@
     margin-inline:  auto;
 }
 
+.border-radius-md{
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+}
+
+ion-button{
+    text-transform: inherit;
+    font-weight: 400;
+    letter-spacing: 0;
+}
+
+ion-grid{
+    margin-top: 2rem;
+}

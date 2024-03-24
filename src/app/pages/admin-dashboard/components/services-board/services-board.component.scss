@@ -1,0 +1,27 @@
+ion-card {
+    background-color: #F9F9F9;
+}
+
+.service-card {
+    width: auto;
+    height: 12rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    ion-card-title {
+        font-size: var(--font-lg);
+        color: var(--ion-color-primary);
+        font-weight: 400;
+    }
+}
+
+/** media **/
+@media screen and (max-width:768px){
+    .service-card{
+        margin-top: 0;
+        padding-top: 0;
+    }
+}

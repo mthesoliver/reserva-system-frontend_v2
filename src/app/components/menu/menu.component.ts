@@ -6,7 +6,7 @@ import { SharedModule } from 'src/app/modules/common-module/shared';
 import { LoginComponent } from '../login/login.component';
 import { MenuVisibilityService } from 'src/app/services/menu-visibility.service';
 import { ResourceService } from 'src/app/services/resource.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule} from '@angular/common/http';
 
 @Component({
   selector: 'app-menu',
@@ -17,7 +17,7 @@ import { HttpClientModule } from '@angular/common/http';
     RouterModule,
     IonicModule,
     SharedModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers:[LoginComponent]
 })
@@ -29,7 +29,7 @@ export class MenuComponent implements OnInit {
 
   menuVisibility:boolean;
 
-  constructor(private router: Router, private login:LoginComponent, private menuVisibilityService: MenuVisibilityService, private resourceService:ResourceService) { }
+  constructor(private router: Router, private login:LoginComponent, private menuVisibilityService: MenuVisibilityService, private resourceService:ResourceService, private http: HttpClient) { }
 
   ngOnInit(): void {
 
@@ -45,8 +45,7 @@ export class MenuComponent implements OnInit {
   // }
 
   onLogout(){
-    window.location.href = '/logout';
-      
+    window.location.href = 'http://127.0.0.1:9000/logout';
   }
 
   onLogin(){
@@ -58,6 +57,9 @@ export class MenuComponent implements OnInit {
       if(data.message != null){
         this.isLogged=true;
       }
+    },
+    err=>{
+      console.error(err);
     })
   }
 

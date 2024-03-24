@@ -30,7 +30,7 @@ export class UserComponent  implements OnInit {
   }
 
   user():void{
-    this.resourceService.userTwo().subscribe({
+    this.resourceService.user().subscribe({
       next: (res: any) => (this.msgUser = res.message),
       error: (err: any) => (this.msgUser = err.statusText + ': ' + err.status)
     })
