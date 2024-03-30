@@ -20,18 +20,25 @@
     <ion-grid class="list-services">
       <ion-row id="services-boards" class="media-container col-services">
 
-          <app-services-board *ngFor="let el of activeServices"></app-services-board>
-          <!-- <app-services-board></app-services-board> -->
+          <app-services-board 
+          serviceName="{{activeServices[i].serviceName}}"
+          timeWork="{{activeServices[i].timeWork}}"
+          serviceId="{{activeServices[i].serviceId}}"
+          *ngFor="let el of activeServices; index as i"></app-services-board>
 
       </ion-row>
     </ion-grid>
+
     <ion-grid>
-      <ion-row class="media-container">
-        <ion-col class="ion-justify-content-start">
+      <ion-row class="media-container ion-align-items-start">
           <h1>Últimas reservas</h1>
-        </ion-col>
       </ion-row>
     </ion-grid>
-    <app-reservation-list></app-reservation-list>
+
+    <app-reservation-list
+    serviceId="{{serviceId}}"
+    dataSource="{{reservationList}}"
+    ></app-reservation-list>
+
   </section>
 </ion-content>

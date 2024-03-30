@@ -25,35 +25,136 @@
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 @import "./media.scss";
+@import 'swiper/css';
 
 
-.container{
+.container {
     max-width: 1080px;
     margin: auto;
 }
 
-.container-max{
+.container-max {
     max-width: 100vw;
 }
 
-.wrapper{
-    width: 460px!important;
+.wrapper {
+    width: 460px !important;
     padding-inline: 3rem;
     padding-block: 3rem;
-    margin-inline:  auto;
+    margin-inline: auto;
 }
 
-.border-radius-md{
+.border-radius-md {
     border-radius: var(--border-radius-md);
     overflow: hidden;
 }
 
-ion-button{
+ion-button {
     text-transform: inherit;
     font-weight: 400;
     letter-spacing: 0;
 }
 
-ion-grid{
+ion-grid {
     margin-top: 2rem;
+}
+
+h1 {
+    color: var(--ion-color-primary);
+    font-weight: 800 !important;
+}
+
+
+
+/** calendar **/
+table {
+    border: none !important;
+}
+
+thead th {
+    border: none !important;
+}
+
+.monthview-selected {
+    background-color: #003594 !important;
+}
+
+
+.monthview-disabled {
+    background-color: transparent !important;
+    color: #d8e9ff !important;
+    font-weight: 400 !important;
+}
+
+.weekview-allday-table,
+.weekview-allday-label,
+.weekview-allday-content-wrapper {
+    display: none;
+}
+
+.table-bordered td {
+    font-weight: 600;
+    border-radius: 50% !important;
+    border: none !important;
+    background-color: #EEF5FF;
+    color: #003594;
+    transition: cubic-bezier(0.075, 0.82, 0.165, 1) .6s;
+}
+
+.table-bordered td:hover {
+    border: none !important;
+    background-color: #4995ff;
+    color: #fff;
+    transition: cubic-bezier(0.075, 0.82, 0.165, 1) .6s;
+}
+
+.table-bordered tr td {
+    padding: .625rem !important;
+}
+
+.table-bordered th {
+    font-weight: 400 !important;
+}
+
+.event-detail-container[_ngcontent-ng-c1552087244] {
+    margin-top: 1rem !important;
+    border-top: 0 !important;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+    display: block;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background: transparent;
+}
+
+.services-calendar ion-list {
+    display: none !important;
+}
+
+
+/** scroll-bar **/
+/* width */
+::-webkit-scrollbar {
+    width: 10px !important;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #EEF5FF !important;
+    border-radius: 10px !important;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #1b4ca5 !important;
+    border-radius: 10px !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #003594 !important;
+    border-radius: 10px !important;
 }

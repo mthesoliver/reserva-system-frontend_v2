@@ -1,8 +1,6 @@
-ion-card {
-    background-color: #F9F9F9;
-}
-
 .service-card {
+    border: #e7e7e7 1px solid;
+    box-shadow: none;
     width: auto;
     height: 12rem;
     display: flex;
@@ -10,12 +8,18 @@ ion-card {
     justify-content: center;
     align-items: center;
     gap: 10px;
+    transition: cubic-bezier(0.075, 0.82, 0.165, 1) .6s;
 
     ion-card-title {
         font-size: var(--font-lg);
         color: var(--ion-color-primary);
         font-weight: 400;
     }
+}
+
+.service-card:hover{
+    background-color: #F9F9F9;
+    transition: cubic-bezier(0.075, 0.82, 0.165, 1) .6s;
 }
 
 /** media **/

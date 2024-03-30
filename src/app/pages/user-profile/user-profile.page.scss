@@ -1,0 +1,55 @@
+.form-container{
+    display: flex;
+    flex-direction: column;
+    margin-block: 2rem;
+    padding: 2rem;
+    gap:1rem;
+
+    .form-context{
+        max-width: 632px;
+        min-width: 360px;
+        width: 100%;
+    }
+}
+
+.profile-img{
+    max-width:160px ;
+    max-height: 160px;
+    border-radius: 50%;
+}
+
+.bg-color{
+    background-color: #F2F2F2;
+}
+
+.input-title{
+    color: var(--ion-color-primary);
+}
+
+.btn-grid{
+    display: flex;
+}
+
+.btn-reset-pass{
+    --border-color: #adadad;
+    --background: transparent;
+    --color:  #adadad;
+    transition: .3s;
+}
+
+.btn-reset-pass:hover{
+    --border-color: var(--ion-color-primary);
+    --background: transparent;
+    --color:  var(--ion-color-primary);
+    transition: .3s;
+}
+
+ion-icon, .readonly {
+    color: #adadad;
+}
+
+:host(.button-outline) {
+    --border-color: var(--ion-color-primary, #3880ff);
+    --background: transparent;
+    --color: var(--ion-color-primary, #3880ff);
+}

@@ -1,11 +1,13 @@
 ion-col {
     display: flex;
+}
 
-    h1 {
-        font-size: var(--font-lg);
-        font-weight: 800;
-        color: var(--ion-color-primary);
-    }
+h1 {
+    margin-top: 1rem;
+    font-size: var(--font-lg);
+    font-weight: 800;
+    color: var(--ion-color-primary);
+    text-align: left;
 }
 
 .list-services {
@@ -27,5 +29,10 @@ app-services-board{
     .col-services {
         padding-block: 1rem;
         display: block;
+    }
+
+    app-reservation-list{
+        display: block;
+        overflow-x: scroll;
     }
 }

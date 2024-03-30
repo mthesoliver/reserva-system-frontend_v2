@@ -32,11 +32,23 @@ export class ResourceService {
     localStorage.setItem('role', role);
   }
 
+  public setServiceIdToStorage(id){
+    localStorage.setItem('serviceId', id);
+  }
+
   public getUserRoleToStorage(){
-    localStorage.getItem('role');
+    return localStorage.getItem('role');
+  }
+
+  public getServiceIdToStorage(){
+    return localStorage.getItem('serviceId');
   }
 
   public clearUserRoleToStorage(){
     localStorage.removeItem('role');
+  }
+
+  public clearServiceIdToStorage(){
+    localStorage.removeItem('serviceId');
   }
 }

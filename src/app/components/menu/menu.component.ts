@@ -45,6 +45,8 @@ export class MenuComponent implements OnInit {
   // }
 
   onLogout(){
+    this.resourceService.clearUserRoleToStorage();
+    this.resourceService.clearServiceIdToStorage();
     window.location.href = 'http://127.0.0.1:9000/logout';
   }
 

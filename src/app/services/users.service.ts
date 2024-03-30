@@ -15,7 +15,6 @@ export class UsersService {
   }
 
   postNewUser(registerUser):Observable<any>{
-    console.log(registerUser);
     return this.http.post<User>('/resource/users/register', registerUser);
   }
 
@@ -23,22 +22,8 @@ export class UsersService {
     return this.http.get<any>(`/resource/users/${id}`).pipe(first());
   }
 
-  // postWithCSRFToken(data: User): Observable<any> {
-  //   const csrfToken = this.getCookie('XSRF-TOKEN');
-  //   console.log(csrfToken);
-  //   const headers = new HttpHeaders({
-  //     'Content-Type': 'application/json',
-  //     'X-XSRF-TOKEN': csrfToken
-  //   });
-
-  //   return this.http.post<User>('resource/users/register', data, {headers} );
-  // }
-
-  // private getCookie(name: string): string {
-  //   const value = `; ${document.cookie}`;
-  //   const parts = value.split(`; ${name}=`);
-  //   if (parts.length === 2) return parts.pop().split(';').shift();
-  //   return '';
-  // }
+  updateUser(updatedUser):Observable<any>{
+    return this.http.put<any>(`/resource/users`, updatedUser);
+  }
 
 }

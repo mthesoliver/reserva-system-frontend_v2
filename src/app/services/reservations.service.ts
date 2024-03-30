@@ -9,7 +9,7 @@ export class ReservationsService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getReservationList(id:number):Observable<any>{
+  getReservationList(id:any):Observable<any>{
     return this.httpClient.get<any>(`/resource/services/${id}/reservations`);
   }
 

@@ -13,6 +13,7 @@ export class LogoutComponent  implements OnInit {
 
   ngOnInit() {
     this.resourceService.clearUserRoleToStorage();
+    this.resourceService.clearServiceIdToStorage();
     this.router.navigate(['login'])
   }
 

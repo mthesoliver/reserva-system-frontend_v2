@@ -8,6 +8,8 @@ import { ServicesBoardComponent } from './components/services-board/services-boa
 import { ReservationListComponent } from './components/reservation-list/reservation-list.component';
 import { ServicesService } from 'src/app/services/services.service';
 import { UsersService } from 'src/app/services/users.service';
+import { ReservationsService } from 'src/app/services/reservations.service';
+import { Reservation } from 'src/app/model/reservation';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -25,27 +27,46 @@ import { UsersService } from 'src/app/services/users.service';
 })
 export class AdminDashboardPage implements OnInit {
   currentUserId: number;
-  activeServices:any[] = [];
+  activeServices: any[] = [];
+  reservationList: Reservation[] = [];
 
-  constructor(private resourceService: ResourceService, private services: ServicesService, private userService: UsersService) { }
+  serviceId: any;
+  userId: number;
+
+  editInfoClick:boolean=false
+
+  constructor(private resourceService: ResourceService, private services: ServicesService, private userService: UsersService) {
+  }
 
   ngOnInit() {
-    this.resourceService.currentUser().subscribe(
-      data => {
-        this.currentUserId = data.id;
 
-        this.userService.getUserById(this.currentUserId).subscribe(
-          data=>{
-            data.services.forEach(el => {
-              this.activeServices.push(el)
-              // let servicesBoards = document.createElement('app-services-board')
-              // document.getElementById('services-boards').appendChild(servicesBoards)
-            });
+    this.resourceService.currentUser().subscribe(data => {
+      this.currentUserId = data.id;
+      this.userId = data.id;
 
-            console.log(this.activeServices)
-          }
-        )
-      })
+      this.userService.getUserById(this.userId).subscribe(
+        data => {
+          data.services.forEach(el => {
+            el={
+              serviceId:el.serviceId,
+              serviceName: el.serviceName,
+              timeWork: `${(el.startTime).slice(0,5)}h as ${(el.endTime).slice(0,5)}h`
+            }
+            this.activeServices.push(el)
+          })
+        })
+    })
+    
+    this.serviceId = this.resourceService.getServiceIdToStorage();
 
   }
+
+
+
+  editInfo(){
+    this.editInfoClick = true
+    console.log(this.editInfoClick);
+  }
+
 }
+

@@ -25,3 +25,11 @@ th, td{
 // .demo-row-is-clicked {
 //     font-weight: bold;
 // }
+
+/** media **/
+@media screen and (max-width:768px) {
+    table {
+        width: 10% !important;
+    }
+    
+}

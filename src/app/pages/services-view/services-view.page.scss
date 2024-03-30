@@ -1,0 +1,55 @@
+#service-row{
+    display: flex;
+    align-items: center;
+}
+
+.services-calendar-container{
+    margin-top: 2rem;
+    padding: 2rem 1rem;
+    border: #e7e7e7 1px solid;
+    border-radius: var( --border-radius-md);
+}
+
+.services-calendar{
+    text-transform: capitalize;
+}
+
+.calendar-col{
+    border-inline:1px solid #e7e7e7;
+    padding-inline: 2rem;
+}
+
+.time-col{
+    padding-left: 2rem;
+    max-height: 60vh;
+    overflow-y: scroll
+}
+
+.form-col{
+    padding-right: 2rem;
+}
+
+.days-list{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding-right: 2rem;
+
+    ion-checkbox{
+        font-size: var(--font-md);
+        padding-bottom: .325rem;
+    }
+
+}
+
+.input-title{
+    font-size: calc(var(--font-md) + .125rem);
+    margin-block: 2rem 1rem;
+}
+
+.time-select{
+    display: inline-flex;
+    max-width: 40%;
+    margin-right: 1rem;
+}
+

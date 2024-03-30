@@ -1,16 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { SharedModule } from 'src/app/modules/common-module/shared';
 import { MatTableModule } from '@angular/material/table';
-import { ReservationsService } from 'src/app/services/reservations.service';
 import { Reservation } from 'src/app/model/reservation';
 import { ServicesService } from 'src/app/services/services.service';
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
 
 const RESERVATION_LIST: Reservation[] = [
   { idReserva: 1, cliente: 'Acelino', servico: 'Lab1', data: '29/04/2024', horario: '10h as 11h', situacao: 'Aguardando' },
@@ -28,38 +21,36 @@ const RESERVATION_LIST: Reservation[] = [
 })
 export class ReservationListComponent implements OnInit {
 
+  @Input()
+  serviceId: any;
+
   reservationList: Reservation[] = [];
   displayedColumns: string[] = ['idReserva', 'cliente', 'servico', 'horario', 'data', 'situacao'];
+  @Input()
   dataSource;
   clickedRows = new Set<Reservation>();
 
-  constructor(private reservationService: ReservationsService, private services: ServicesService) { }
+  constructor(private services: ServicesService) { }
 
   ngOnInit() {
-    let serviceName: string;
-    this.services.getServicesById(7).subscribe(data => {
-      serviceName = data[0].serviceName
-    })
-
-    this.reservationService.getReservationList(7).subscribe(
-      data => {
-        data.forEach(el => {
-
-          let reservation = 
-          [{
-              idReserva: el.id,
-              cliente: el.user.name,
-              servico: serviceName,
-              horario: `${el.startTime.slice(0,5)}h as ${el.endTime.slice(0,5)}h`,
-              data: el.date,
-              situacao: el.status
+    this.services.getServicesById(this.serviceId).subscribe(data => {
+      data.forEach(el => {
+        for (const element of el.reservations) {
+          let reservation =
+            [{
+              idReserva: element.reservationId,
+              cliente: element.user.name,
+              servico: el.serviceName,
+              horario: `${element.startTime.slice(0, 5)}h as ${element.endTime.slice(0, 5)}h`,
+              data: element.date,
+              situacao: element.status
             }]
-
           this.reservationList.push(...reservation);
-        });
-
-        this.dataSource = this.reservationList
+        }
       });
+
+      this.dataSource = this.reservationList
+    })
   }
 
 }

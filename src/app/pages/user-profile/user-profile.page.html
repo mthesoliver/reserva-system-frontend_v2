@@ -1,0 +1,47 @@
+
+  <ion-toolbar>
+  </ion-toolbar>
+
+<ion-content [fullscreen]="true">
+  <section class="container">
+    <app-owner-info></app-owner-info>
+    
+    <ion-row class="form-container ion-align-items-center bg-color border-radius-md ion-padding ion-justify-content-center">
+      <h1 class="ion-text-center">Informações da conta</h1>
+      <img class="profile-img"
+      src="{{profileImg}}" alt="" srcset="">
+
+      <ion-col size-lg="8" size-sm="6" size="auto">
+        <form class="form-context"  [formGroup]="registerForm" novalidate>
+          
+          <span class="input-title">Nome</span>
+          <ion-input fill="outline" class="ion-margin-vertical" formControlName="nome" placeholder="{{userName}}" [(ngModel)]="userUpdate.nome" errorText="Digite um nome válido" ></ion-input>
+
+          <span class="input-title">Telefone</span>
+          <ion-input fill="outline" class="ion-margin-vertical" formControlName="telefone" placeholder="{{userPhone}}"  
+          [(ngModel)]="userUpdate.telefone"
+          [maskito]="phoneMask"
+          [maskitoElement]="maskPredicate"
+          errorText="Digite um telefone válido" ></ion-input>
+
+          <span class="input-title">Email</span>
+          <ion-input fill="outline" class="ion-margin-vertical readonly" readonly value="{{userEmail}}">
+            <ion-icon name="warning" size="large" slot="end"></ion-icon>
+          </ion-input>
+
+          <ion-grid>
+            <ion-row class="btn-grid">
+              <ion-col>
+                <ion-button type="submit" fill="outline"  expand="block" class="ion-padding-vertical btn-reset-pass">Redefinir a senha</ion-button>
+              </ion-col>
+              <ion-col >
+                <ion-button type="submit" color="primary" expand="block" class="ion-padding-vertical" [disabled]="!registerForm.valid" (click)="onSubmit()">Salvar alterações</ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          
+        </form>
+      </ion-col>
+    </ion-row>
+  </section>
+</ion-content>

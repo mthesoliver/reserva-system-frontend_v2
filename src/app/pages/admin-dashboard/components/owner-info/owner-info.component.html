@@ -1,4 +1,4 @@
-<ion-grid class="bg-color border-radius-md ion-padding" >
+<ion-grid class="bg-color border-radius-md ion-padding">
   <ion-row class=" media-container">
     <ion-col size-md="2" size="auto" class="ion-text-center">
       <img class="profile-img"
@@ -10,9 +10,10 @@
       <p><a href="tel:{{currentUserInfoPhone}}">{{currentUserInfoPhone}}</a></p>
     </ion-col>
     <ion-col size-md="4" size="auto" class="info-buttons">
-      <ion-button>Editar informações</ion-button>
+      <ion-button (click)="editInfo()">Editar informações</ion-button>
       <ion-button *ngIf="!isAdmin">Entrar em contato via e-mail</ion-button>
       <ion-button *ngIf="!isAdmin" color="success" >Entrar em contato via telefone</ion-button>
     </ion-col>
   </ion-row>
 </ion-grid>
+

@@ -1,0 +1,94 @@
+<ion-toolbar>
+</ion-toolbar>
+
+
+<ion-content [fullscreen]="true">
+  <section class="container">
+    <app-owner-info></app-owner-info>
+
+    <ion-row class="services-calendar-container" id="service-row">
+      <ion-col size-lg="4" size-md="3.5" size="auto" class="form-col">
+        <ion-title color="primary">Definições</ion-title>
+        <ion-title class="ion-padding-top">{{actualService['serviceName']}}</ion-title>
+        <form [formGroup]="serviceUpdateForm" novalidate method="PUT">
+          <ion-row>
+          <span class="input-title">Nome do serviço:</span>
+          <ion-input fill="outline" type="text" placeholder="{{actualService['serviceName']}}" formControlName="nome" [(ngModel)]="serviceUpdated.nomeServico"></ion-input>
+        </ion-row>
+
+          <ion-row>
+            <span class="input-title">Dias da semana disponíveis para reserva:</span>
+            <ion-col size="auto" class="days-list">
+              <ion-checkbox labelPlacement="end" alias="0" value="0" (click)="activeCheckbox($event.target)">Domingo</ion-checkbox>
+              <ion-checkbox labelPlacement="end" alias="1" value="1" (click)="activeCheckbox($event.target)">Segunda</ion-checkbox>
+              <ion-checkbox labelPlacement="end" alias="2" value="2" (click)="activeCheckbox($event.target)">Terça</ion-checkbox>
+              <ion-checkbox labelPlacement="end" alias="3" value="3" (click)="activeCheckbox($event.target)">Quarta</ion-checkbox>
+            </ion-col>
+
+            <ion-col size="auto" class="days-list">
+              <ion-checkbox labelPlacement="end" alias="4" value="4" (click)="activeCheckbox($event.target)">Quinta</ion-checkbox>
+              <ion-checkbox labelPlacement="end" alias="5" value="5" (click)="activeCheckbox($event.target)">Sexta</ion-checkbox>
+              <ion-checkbox labelPlacement="end" alias="6" value="6" (click)="activeCheckbox($event.target)">Sábado</ion-checkbox>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <span class="input-title">Horário de atendimento:</span>
+            <br>
+              <ion-input type="time" class="time-select" fill="outline" label="Das:" 
+              labelPlacement="floating" formControlName="startTime"  [(ngModel)]="serviceUpdated.horarioInicio" value="{{actualService['startTime']}}">
+          </ion-input>
+              <ion-input type="time" class="time-select" fill="outline" label="Até as:" 
+              labelPlacement="floating" formControlName="endTime" [(ngModel)]="serviceUpdated.horarioFinal" value="{{actualService['endTime']}}">
+            </ion-input>
+          </ion-row>
+
+          <ion-row class="ion-padding-top">
+            <ion-button type="submit" (click)="onSubmit()" [disabled]="!serviceUpdateForm.valid" >Atualizar serviço</ion-button>
+          </ion-row>
+        </form>
+      </ion-col>
+
+      <ion-col size-lg="5" size-md="5" size="auto" class="calendar-col">
+        <ion-toolbar>
+          <ion-nav>
+            <ion-title style="text-transform: capitalize;" color="primary" class="ion-text-center">{{viewTitle}}</ion-title>
+            <ion-buttons class="ion-justify-content-between">
+              <ion-button (click)="calendarBack()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+              <ion-button [disabled]="isToday" (click)="today()">Hoje</ion-button>
+              <!-- <ion-button (click)="changeMode('month')">Mês</ion-button>
+              <ion-button (click)="changeMode('week')">Semana</ion-button> -->
+              <ion-button (click)="calendarForward()"><ion-icon name="chevron-forward-outline"></ion-icon></ion-button>
+              <!-- <ion-button (click)="loadEvents()">Load Events</ion-button> -->
+            </ion-buttons>
+          </ion-nav>
+        </ion-toolbar>
+        <calendar class="services-calendar" [eventSource]="eventSource" 
+        [calendarMode]="calendar.mode"
+          [currentDate]="calendar.currentDate" 
+          [markDisabled]="markDisabled" [timeInterval]="30" 
+          [endHour]="setEndHour"
+          [startHour]="setStartHour" 
+          noEventsLabel="s"
+          (onCurrentDateChanged)="onCurrentDateChanged($event)" 
+          allDayLabel=""
+          (onEventSelected)="onEventSelected($event)"
+          (onTitleChanged)="onViewTitleChanged($event)"
+          (onTimeSelected)="onTimeSelected($event)" 
+          [step]="calendar.step">
+        </calendar>
+      </ion-col>
+
+      <ion-col size-lg="3" size-md="3.5" size="auto" class="time-col">
+        <ion-title color="primary">Horários disponíveis</ion-title>
+        <ion-segment>
+          <ion-list style="display: flex; flex-direction: column;">
+            <ion-button fill="outline" *ngFor="let horas of horariosDisponiveis">{{horas}}</ion-button>
+          </ion-list>
+        </ion-segment>
+      </ion-col>
+    </ion-row>
+
+  </section>
+  
+</ion-content>

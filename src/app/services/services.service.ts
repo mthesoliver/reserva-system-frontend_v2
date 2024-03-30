@@ -13,7 +13,11 @@ export class ServicesService {
     return this.httpClient.get<any>('/resource/services')
   }
 
-  getServicesById(id: number): Observable<any> {
+  getServicesById(id: any): Observable<any> {
     return this.httpClient.get<any>(`/resource/services/${id}`)
+  }
+
+  updateServiceById(updatedService):Observable<any>{
+    return this.httpClient.put<any>(`resource/services`, updatedService)
   }
 }

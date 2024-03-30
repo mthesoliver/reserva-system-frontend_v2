@@ -25,6 +25,14 @@ export const routes: Routes = [
   },
   { path: 'logout', component: LogoutComponent },
   { path: 'login', component: LoginComponent },
-  { path: '**', redirectTo: 'home', pathMatch: 'full' },
+  {
+    path: 'admin/user-profile',
+    loadComponent: () => import('./pages/user-profile/user-profile.page').then( m => m.UserProfilePage)
+  },
+  {
+    path: 'admin/services/:id',
+    loadComponent: () => import('./pages/services-view/services-view.page').then( m => m.ServicesViewPage)
+  },
   
+  { path: '**', redirectTo: 'home', pathMatch: 'full' }
 ];
