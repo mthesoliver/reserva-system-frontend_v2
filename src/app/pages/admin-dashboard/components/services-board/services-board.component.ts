@@ -23,15 +23,28 @@ export class ServicesBoardComponent implements OnInit {
   @Input()
   timeWork: string;
 
+  isAdmin:boolean
 
-  constructor(private router:Router
-    //private service: ServicesService, private resourceService: ResourceService, private userService: UsersService
+
+  constructor(private router:Router, private resourceService: ResourceService
+    //private service: ServicesService, private userService: UsersService
     ) {}
 
   ngOnInit() {
+    if(this.resourceService.getUserRoleToStorage() === "ADMIN"){
+      this.isAdmin = true
+    }
   }
 
-  onClick(serviceId){
-    this.router.navigate([`admin/services/${serviceId}`])
+  onClick(){
+    this.router.navigate(['admin/services', this.serviceId]);
+  }
+
+  toDetails(){
+    this.router.navigate(['admin/services/details', this.serviceId])
+  }
+
+  goToCalendar(){
+    this.router.navigate([`page/${location.href.split('/').slice(-1).toString().split('%20').join().replace(',',' ')}/${this.serviceId}`]);
   }
 }

@@ -1,10 +1,12 @@
 <ion-col>
   <ion-card class="service-card border-radius-md">
+
     <ion-card-header>
-      <ion-card-title>{{serviceName}}</ion-card-title>
+      <ion-card-title  (click)="toDetails()">{{serviceName}}</ion-card-title>
       <ion-card-subtitle class="ion-text-center">{{timeWork}}</ion-card-subtitle>
     </ion-card-header>
 
-    <ion-button (click)="onClick(serviceId)">Editar serviço</ion-button>
+    <ion-button (click)="onClick()" *ngIf="isAdmin">Editar serviço</ion-button>
+    <ion-button (click)="goToCalendar()" *ngIf="!isAdmin" color="secondary">Fazer sua reserva</ion-button>
   </ion-card>
 </ion-col>

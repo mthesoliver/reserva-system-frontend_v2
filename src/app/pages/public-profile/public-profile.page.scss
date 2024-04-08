@@ -1,0 +1,33 @@
+ion-col {
+    display: flex;
+}
+
+h1 {
+    margin-top: 1rem;
+    font-size: var(--font-lg);
+    font-weight: 800;
+    color: var(--ion-color-primary);
+    text-align: left;
+}
+
+.list-services {
+    margin-top: -2rem;
+}
+
+app-services-board{
+    width: 50%;
+    margin-bottom: 1rem;
+    height: 12rem;
+}
+
+/** media **/
+@media screen and (max-width:768px) {
+    .list-services {
+        margin-top: 1rem;
+    }
+
+    .col-services {
+        padding-block: 1rem;
+        display: block;
+    }
+}

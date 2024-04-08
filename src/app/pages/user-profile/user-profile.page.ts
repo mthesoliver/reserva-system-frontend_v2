@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SharedModule } from 'src/app/modules/common-module/shared';
 import { OwnerInfoComponent } from '../admin-dashboard/components/owner-info/owner-info.component';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -7,6 +7,7 @@ import { UsersService } from 'src/app/services/users.service';
 import { ResourceService } from 'src/app/services/resource.service';
 import { MaskitoDirective } from '@maskito/angular';
 import { UserUpdate } from 'src/app/model/userUpdate';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -17,8 +18,9 @@ import { UserUpdate } from 'src/app/model/userUpdate';
   imports: [SharedModule, OwnerInfoComponent, FormsModule,
     ReactiveFormsModule, MaskitoDirective]
 })
-export class UserProfilePage implements OnInit {
+export class UserProfilePage implements OnInit, OnDestroy {
   profileImg:string = 'https://blog.davidstea.com/en/wp-content/uploads/2018/04/Placeholder.jpg'
+  subUser:Subscription
 
   userId;
   userEmail:string;
@@ -44,8 +46,12 @@ export class UserProfilePage implements OnInit {
 
   constructor(private fb: FormBuilder, private userService:UsersService, private resourceService:ResourceService) { }
 
+  ngOnDestroy(): void {
+    this.subUser.unsubscribe()
+  }
+
   ngOnInit() {
-    this.resourceService.currentUser().subscribe(
+    this.subUser = this.resourceService.currentUser().subscribe(
       data=>{
         this.userId = data.id;
         this.userEmail = data.email;

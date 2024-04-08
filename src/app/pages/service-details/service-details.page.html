@@ -1,0 +1,44 @@
+<ion-toolbar>
+</ion-toolbar>
+
+
+<ion-content [fullscreen]="true">
+  <section class="container">
+    <app-owner-info></app-owner-info>
+
+    <ion-row class="services-calendar-container" id="service-row">
+
+      <ion-col size-lg="5" size-md="5" size="auto" class="calendar-col">
+        <ion-toolbar>
+          <ion-nav>
+            <ion-title style="text-transform: capitalize;" color="primary"
+              class="ion-text-center">{{viewTitle}}</ion-title>
+            <ion-buttons class="ion-justify-content-between">
+              <ion-button (click)="calendarBack()"><ion-icon
+                  name="chevron-back-outline"></ion-icon>Anterior</ion-button>
+              <ion-button [disabled]="isToday" (click)="today()">Hoje</ion-button>
+              <ion-button (click)="calendarForward()">Próximo<ion-icon
+                  name="chevron-forward-outline"></ion-icon></ion-button>
+            </ion-buttons>
+          </ion-nav>
+        </ion-toolbar>
+        <calendar class="services-calendar-reservation" [eventSource]="eventSource" [calendarMode]="calendar.mode"
+          [currentDate]="calendar.currentDate" [markDisabled]="markDisabled" [timeInterval]="30" [endHour]="setEndHour"
+          [startHour]="setStartHour" noEventsLabel="Sem reservas para esta data" (onCurrentDateChanged)="onCurrentDateChanged($event)"
+          allDayLabel="" (onEventSelected)="onEventSelected($event)" (onTitleChanged)="onViewTitleChanged($event)"
+          (onTimeSelected)="onTimeSelected($event)" [step]="calendar.step">
+        </calendar>
+      </ion-col>
+
+      <ion-col size-lg="3" size-md="3.5" size="auto" class="time-col">
+        <ion-title color="primary">Horários disponíveis</ion-title>
+        <ion-segment>
+          <ion-list style="display: flex; flex-direction: column;">
+            <ion-button fill="outline" *ngFor="let horas of horariosDisponiveis">{{horas}}</ion-button>
+          </ion-list>
+        </ion-segment>
+      </ion-col>
+    </ion-row>
+
+  </section>
+  </ion-content>

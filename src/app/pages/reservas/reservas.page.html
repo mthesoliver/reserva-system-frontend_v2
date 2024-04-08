@@ -1,0 +1,18 @@
+<ion-toolbar>
+</ion-toolbar>
+
+
+<ion-content [fullscreen]="true">
+  <section class="container">
+    <app-owner-info></app-owner-info>
+
+    <ion-grid>
+      <ion-row class="media-container ion-align-items-start">
+          <h1>Últimas reservas</h1>
+      </ion-row>
+    </ion-grid>
+
+    <app-reservation-list *ngIf="loaded"
+    ></app-reservation-list>
+  </section>
+</ion-content>

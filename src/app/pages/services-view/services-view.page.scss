@@ -1,6 +1,7 @@
 #service-row{
     display: flex;
     align-items: center;
+    margin-bottom: 2rem;
 }
 
 .services-calendar-container{
@@ -53,3 +54,26 @@
     margin-right: 1rem;
 }
 
+.modal-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    padding-inline: 1rem;
+
+    section{
+        display: flex;
+        flex-direction: column;
+        gap: .425rem;
+        margin-top: 2rem;
+    }
+
+}
+
+ion-modal{
+    --max-width: 440px!important;
+    --max-height:400px!important;
+    --border-radius:var(--border-radius-md);
+}

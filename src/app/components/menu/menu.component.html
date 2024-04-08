@@ -4,6 +4,7 @@
     <ion-buttons slot="end">
       <ion-button routerLink="/home">Home</ion-button>
       <ion-button routerLink="/user" *ngIf="isLogged">User</ion-button>
+      <ion-button routerLink="/admin/reservas" *ngIf="isAdmin">Acessar reservas</ion-button>
       <ion-button routerLink="/admin/dashboard" *ngIf="isAdmin">Admin</ion-button>
       <ion-button type="Button" color="success" (click)="onLogin()" *ngIf="!isLogged" >Login</ion-button>
       <ion-button type="Button" color="danger" (click)="onLogout()" *ngIf="isLogged">Logout</ion-button>

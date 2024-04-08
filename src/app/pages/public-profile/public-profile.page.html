@@ -3,22 +3,22 @@
 
 <ion-content [fullscreen]="true">
   <section class="container">
-    <app-owner-info></app-owner-info>
-
+    <app-owner-info
+    [currentUserInfoEmail]="currentUserInfoEmail"
+    [currentUserInfoName]="currentUserInfoName"
+    [currentUserInfoPhone]="currentUserInfoPhone"
+    ></app-owner-info>
+    
     <ion-grid>
       <ion-row class="media-container">
         <ion-col class="ion-justify-content-start">
-          <h1>Serviços Ativos</h1>
-        </ion-col>
-
-        <ion-col class="ion-justify-content-end">
-          <ion-button color="secondary" (click)="addServices()">Adicionar novo serviço +</ion-button>
+          <h1>Serviços Disponíveis</h1>
         </ion-col>
       </ion-row>
     </ion-grid>
 
     <ion-grid class="list-services">
-      <ion-row id="services-boards" class="media-container col-services"  *ngIf="activeServices.length > 0">
+      <ion-row id="services-boards" class="media-container col-services" >
 
           <app-services-board 
           serviceName="{{activeServices[i].serviceName}}"
@@ -28,15 +28,6 @@
 
       </ion-row>
     </ion-grid>
-
-    <ion-grid>
-      <ion-row class="media-container ion-align-items-start">
-          <h1>Últimas reservas</h1>
-      </ion-row>
-    </ion-grid>
-
-    <app-reservation-list *ngIf="loaded"
-    ></app-reservation-list>
 
   </section>
 </ion-content>

@@ -20,4 +20,12 @@ export class ServicesService {
   updateServiceById(updatedService):Observable<any>{
     return this.httpClient.put<any>(`resource/services`, updatedService)
   }
+
+  insertNewService(newService):Observable<any>{
+    return this.httpClient.post<any>(`resource/services`, newService)
+  }
+
+  removeService(id: number): Observable<any> {
+    return this.httpClient.delete<any>(`/resource/services/${id}`)
+  }
 }

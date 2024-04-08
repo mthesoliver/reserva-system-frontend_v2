@@ -14,7 +14,6 @@ export class ReservationsService {
   }
 
   insertNewReservation(id:number, body):Observable<any>{
-    console.log(body);
     return this.httpClient.post<any>(`/resource/services/${id}/reservations`, body);
   }
 }

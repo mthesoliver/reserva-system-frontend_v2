@@ -18,7 +18,7 @@ export class UsersService {
     return this.http.post<User>('/resource/users/register', registerUser);
   }
 
-  getUserById(id:number):Observable<any>{
+  getUserById(id:any):Observable<any>{
     return this.http.get<any>(`/resource/users/${id}`).pipe(first());
   }
 
