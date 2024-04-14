@@ -2,8 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SharedModule } from 'src/app/modules/common-module/shared';
 import { ResourceService } from 'src/app/services/resource.service';
-import { ServicesService } from 'src/app/services/services.service';
-import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-services-board',
@@ -26,9 +24,7 @@ export class ServicesBoardComponent implements OnInit {
   isAdmin:boolean
 
 
-  constructor(private router:Router, private resourceService: ResourceService
-    //private service: ServicesService, private userService: UsersService
-    ) {}
+  constructor(private router:Router, private resourceService: ResourceService) {}
 
   ngOnInit() {
     if(this.resourceService.getUserRoleToStorage() === "ADMIN"){
@@ -45,6 +41,6 @@ export class ServicesBoardComponent implements OnInit {
   }
 
   goToCalendar(){
-    this.router.navigate([`page/${location.href.split('/').slice(-1).toString().split('%20').join().replace(',',' ')}/${this.serviceId}`]);
+    this.router.navigate([`page/${location.href.split('/').slice(-1).toString()}/${this.serviceId}`]);
   }
 }

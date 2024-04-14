@@ -26,4 +26,8 @@ export class UsersService {
     return this.http.put<any>(`/resource/users`, updatedUser);
   }
 
+  adminUsers():Observable<any>{
+    return this.http.get<any>('/resource/users/role-admin')
+  }
+
 }

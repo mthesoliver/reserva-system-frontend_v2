@@ -14,6 +14,7 @@ export class LogoutComponent  implements OnInit {
   ngOnInit() {
     this.resourceService.clearUserRoleToStorage();
     this.resourceService.clearServiceIdToStorage();
+    localStorage.removeItem('reservas');
     this.router.navigate(['login'])
   }
 

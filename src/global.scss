@@ -75,10 +75,22 @@ thead th {
     border: none !important;
 }
 
+.monthview-primary-with-event.monthview-selected  {
+    background-color: #003594 !important;
+}
+
 .monthview-selected {
     background-color: #003594 !important;
 }
 
+
+.monthview-primary-with-event{
+    background-color: #a9c7ff !important;
+}
+
+.monthview-primary-with-event:hover{
+    background-color: #003594 !important;
+}
 
 .monthview-disabled {
     background-color: transparent !important;
@@ -135,6 +147,24 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     display: none !important;
 }
 
+.indicator-dot-container{
+    padding: .225rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:2px;
+}
+
+.indicator-dot{
+    background-color: #003594;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+}
+
+.monthview-selected .indicator-dot{
+    background-color: #4995ff;
+}
 
 /** scroll-bar **/
 /* width */
@@ -157,4 +187,34 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 ::-webkit-scrollbar-thumb:hover {
     background: #003594 !important;
     border-radius: 10px !important;
+}
+
+/** modal **/
+.modal-toolbar{
+    position: absolute;
+    top: 0;
+    right: .625rem;
+    --background:transparent!important;
+
+    ion-icon{
+        cursor: pointer;
+    }
+}
+
+.modal-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: auto;
+    padding-inline: 1rem;
+
+    section{
+        display: flex;
+        flex-direction: column;
+        gap: .425rem;
+        margin-top: 2rem;
+    }
+
 }

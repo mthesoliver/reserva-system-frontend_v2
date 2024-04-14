@@ -31,7 +31,6 @@
 
 .confirm-button {
     width: 12rem;
-    padding-right: 2rem;
     animation: avancar 1s;
 }
 
@@ -111,4 +110,22 @@
         --padding-bottom: 0!important;
         --padding-top: 0!important;
     }
+}
+
+.notification{
+    color: var(--ion-color-danger);
+}
+
+ion-button.toolbar-buttons{
+    --padding-end:1rem;
+    --padding-start:1rem;
+    --padding-top:1rem;
+    --padding-bottom:1rem;
+    --border-radius:.425rem;
+}
+
+ion-toolbar{
+    margin-top: 1rem;
+    --padding-end:1rem;
+    --padding-start:1rem;
 }

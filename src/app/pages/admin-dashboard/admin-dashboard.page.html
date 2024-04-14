@@ -35,7 +35,7 @@
       </ion-row>
     </ion-grid>
 
-    <app-reservation-list *ngIf="loaded"
+    <app-reservation-list *ngIf="loaded" [limiter]="5"
     ></app-reservation-list>
 
   </section>

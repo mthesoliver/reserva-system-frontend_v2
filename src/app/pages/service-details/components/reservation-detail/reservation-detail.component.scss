@@ -1,0 +1,17 @@
+.aguardando {
+    color: var(--ion-color-warning-shade);
+}
+
+.aprovado {
+    color: var(--ion-color-success);
+}
+
+.rejeitado {
+    color: var(--ion-color-danger);
+}
+
+ion-modal{
+    --max-width: 440px!important;
+    --max-height:480px!important;
+    --border-radius:var(--border-radius-md);
+}

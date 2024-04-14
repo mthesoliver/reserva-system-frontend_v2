@@ -266,8 +266,13 @@ export class CreateServiceComponent  implements OnInit, OnDestroy {
     let horarioFinal = data.horarioFinal;
 
     for (let i = parseInt(horarioInicio); i < parseInt(horarioFinal); i++) {
-      this.horariosDisponiveis.push(i + ':00h');
-      this.horariosDisponiveis.push(i + ':30h');
+      if(i<10){
+      this.horariosDisponiveis.push('0' + i + ':00h');
+      this.horariosDisponiveis.push('0' + i + ':30h');
+      }else{
+        this.horariosDisponiveis.push(i + ':00h');
+        this.horariosDisponiveis.push(i + ':30h');
+      }
     }
   }
 

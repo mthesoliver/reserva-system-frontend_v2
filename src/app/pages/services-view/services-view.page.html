@@ -98,10 +98,14 @@
 
 
 
-  <ion-modal trigger="open-modal" (willDismiss)="onWillDismiss($event)">
+  <ion-modal trigger="open-modal" (willDismiss)="onWillDismiss()">
     <ng-template>
-      <ion-content class="ion-paddings">
+
         <div class=" modal-content">
+          <ion-toolbar class="modal-toolbar">
+            <ion-icon slot="end" name="close" size="large" (click)="onWillDismiss()"></ion-icon>
+        </ion-toolbar>
+
           <ion-title class="ion-text-center" color="danger">Confirme que deseja excluir o serviço</ion-title>
 
           <section class="ion-text-center">
@@ -133,7 +137,6 @@
             </ion-buttons>
           </ion-toolbar>
         </div>
-      </ion-content>
 
     </ng-template>
   </ion-modal>

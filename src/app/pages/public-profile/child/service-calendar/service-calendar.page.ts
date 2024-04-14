@@ -1,11 +1,11 @@
-import { animation } from '@angular/animations';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MaskitoDirective } from '@maskito/angular';
 import { MaskitoElementPredicate, MaskitoOptions } from '@maskito/core';
 import { NgCalendarModule, CalendarComponent, CalendarMode, Step } from 'ionic2-calendar';
 import { Subscription } from 'rxjs';
+import { ReturnPageComponent } from 'src/app/components/return-page/return-page.component';
 import { InsertReservation } from 'src/app/model/insertReservation';
 import { SharedModule } from 'src/app/modules/common-module/shared';
 import { OwnerInfoComponent } from 'src/app/pages/admin-dashboard/components/owner-info/owner-info.component';
@@ -24,7 +24,8 @@ import { UsersService } from 'src/app/services/users.service';
     FormsModule,
     ReactiveFormsModule,
     OwnerInfoComponent,
-    MaskitoDirective
+    MaskitoDirective,
+    ReturnPageComponent
   ]
 })
 export class ServiceCalendarPage implements OnInit , OnDestroy {
@@ -46,6 +47,8 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
   currentUserInfoPhone:string;
 
   viewTitle;
+  title:string;
+  content:string;
 
   setStartHour: number = 0;
   setEndHour: number = 0;
@@ -56,6 +59,8 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
   isToday: boolean;
   isAllChecks:boolean = false;
   isNext: boolean = false;
+  isOpenForm:boolean = false
+  isReservationSend:boolean = false;
 
   calendar = {
     allDay: false,
@@ -112,21 +117,27 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
   serviceOwner:string;
   serviceName:string;
 
+  backToOwner:string;
   
   usersList: any[] = [];
 
-  constructor(private activatedRoute:ActivatedRoute, private fb: FormBuilder, private userService:UsersService, private servicesService:ServicesService, private reservationService:ReservationsService) { }
+  constructor(private activatedRoute:ActivatedRoute, private fb: FormBuilder, private userService:UsersService, private servicesService:ServicesService, private reservationService:ReservationsService, private router:Router) { }
 
   ngOnInit() {
+    //this.isReservationSend = true
     this.serviceId = this.activatedRoute.snapshot.paramMap.get('serviceId');
     this.serviceOwner = this.activatedRoute.snapshot.paramMap.get('name');
+    this.backToOwner = location.origin +'/'+ this.activatedRoute.snapshot.url.slice(0,2).join('/').split('%2520').join('%20');
+
     this.subService = this.loadOwnerInfos();
     this.subSelectedService = this.loadServiceData(this.serviceId);
+    this.newReservation.serviceId = this.serviceId;
 
-    this.userService.getUsersEmail().subscribe(users => {
-      this.usersList = users; 
+    this.userService.adminUsers().subscribe(users => {
+      this.usersList = users;
       this.newReservationForm.get('email').addValidators([this.emailExists.bind(this)]);
-    });;
+    });
+    this.title='Solicitação de reserva feita com sucesso!';
   }
 
   ngOnDestroy(): void {
@@ -261,8 +272,13 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
     let horarioFinal = data.endTime;
 
     for (let i = parseInt(horarioInicio); i < parseInt(horarioFinal); i++) {
-      this.horariosDisponiveis.push(i + ':00h');
-      this.horariosDisponiveis.push(i + ':30h');
+      if(i<10){
+      this.horariosDisponiveis.push('0' + i + ':00h');
+      this.horariosDisponiveis.push('0' + i + ':30h');
+      }else{
+        this.horariosDisponiveis.push(i + ':00h');
+        this.horariosDisponiveis.push(i + ':30h');
+      }
     }
   }
 
@@ -283,6 +299,8 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
         this.setDaysOpen()
         this.availableHours(this.selectedService);
         this.serviceName = this.selectedService.serviceName;
+
+        this.content=`Sua solicitação de reserva para ${this.selectedService.serviceName} da ${this.currentUserInfoName} foi realizada com sucesso. A confirmação da sua solicitação será encaminhada no e-mail fornecido, fique de olho para saber quando o Status da sua reserva for atualizado.`;
       }
     );
   }
@@ -352,18 +370,23 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
 
   setEndTime(startTime){
     let timeToint = parseFloat(startTime.replace(":","."));
+    let verify;
 
-    let verify = (timeToint + 1).toFixed(2).replace('.', ':')+"h" ;
+    if(timeToint + 1 <10){
+      verify = '0'+ (timeToint + 1).toFixed(2).replace('.', ':')+"h" ;
+    }else{
+      verify = (timeToint + 1).toFixed(2).replace('.', ':')+"h" ;
+    }
     
     if(this.horariosDisponiveis.includes(verify)){
-      
       let endTime = (timeToint + 1).toFixed(2).replace('.', ':') + ":00";
+
       return endTime;
     } else{
       let lastHour = parseInt(this.horariosDisponiveis.slice(-1).toString().replace('h', '').replace(':','.')) + 1;
+
       return lastHour.toFixed(2).replace('.', ':') + ":00";
     }
-    
   }
 
   checkReservation():void{
@@ -376,10 +399,12 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
 
   goToConfirm(){
     this.isNext = true;
+    this.isOpenForm = true;
   }
 
   returnToReservation(){
     this.isNext = false;
+    this.isOpenForm = false;
   }
 
   triggerClass(){
@@ -412,5 +437,6 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
     this.newReservation.user = this.reservationUser;
     console.log(this.newReservation);
     this.reservationService.insertNewReservation(this.serviceId, this.newReservation).subscribe();
+    this.isReservationSend = true;
   }
 }

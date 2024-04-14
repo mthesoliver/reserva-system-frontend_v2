@@ -2,7 +2,7 @@
 </ion-toolbar>
 
 <ion-content [fullscreen]="true">
-<section class="container">
+<section class="container" *ngIf="!isReservationSend">
   <app-owner-info
   [currentUserInfoEmail]="currentUserInfoEmail"
   [currentUserInfoName]="currentUserInfoName"
@@ -10,47 +10,6 @@
   ></app-owner-info>
 
   <ion-row class="services-calendar-container" id="service-row">
-    <!-- <ion-col size-lg="4" size-md="3.5" size="auto" class="form-col">
-      <ion-title color="primary">Definições</ion-title>
-      <ion-title class="ion-padding-top">{{newService.nomeServico}}</ion-title>
-      <form [formGroup]="serviceUpdateForm" novalidate method="POST">
-        <ion-row>
-        <span class="input-title">Nome do serviço:</span>
-        <ion-input fill="outline" type="text" placeholder="Digite um nome para o serviço" formControlName="nome" [(ngModel)]="newService.nomeServico"></ion-input>
-      </ion-row>
-
-        <ion-row>
-          <span class="input-title">Dias da semana disponíveis para reserva:</span>
-          <ion-col size="auto" class="days-list">
-            <ion-checkbox labelPlacement="end" alias="0" value="0" (click)="activeCheckbox($event.target)">Domingo</ion-checkbox>
-            <ion-checkbox labelPlacement="end" alias="1" value="1" (click)="activeCheckbox($event.target)">Segunda</ion-checkbox>
-            <ion-checkbox labelPlacement="end" alias="2" value="2" (click)="activeCheckbox($event.target)">Terça</ion-checkbox>
-            <ion-checkbox labelPlacement="end" alias="3" value="3" (click)="activeCheckbox($event.target)">Quarta</ion-checkbox>
-          </ion-col>
-
-          <ion-col size="auto" class="days-list">
-            <ion-checkbox labelPlacement="end" alias="4" value="4" (click)="activeCheckbox($event.target)">Quinta</ion-checkbox>
-            <ion-checkbox labelPlacement="end" alias="5" value="5" (click)="activeCheckbox($event.target)">Sexta</ion-checkbox>
-            <ion-checkbox labelPlacement="end" alias="6" value="6" (click)="activeCheckbox($event.target)">Sábado</ion-checkbox>
-          </ion-col>
-        </ion-row>
-
-        <ion-row>
-          <span class="input-title">Horário de atendimento:</span>
-          <br>
-            <ion-input type="time" class="time-select" fill="outline" label="Das:" 
-            labelPlacement="floating" formControlName="startTime"  [(ngModel)]="newService.horarioInicio" value="{{newService['startTime']}}">
-        </ion-input>
-            <ion-input type="time" class="time-select" fill="outline" label="Até as:" 
-            labelPlacement="floating" formControlName="endTime" [(ngModel)]="newService.horarioFinal" value="{{newService['endTime']}}">
-          </ion-input>
-        </ion-row>
-
-        <ion-row class="ion-padding-top">
-          <ion-button type="submit" (click)="onSubmit()" [disabled]="!serviceUpdateForm.valid" >Adicionar serviço</ion-button>
-        </ion-row>
-      </form>
-    </ion-col> -->
 
     <ion-col size-lg="4" size-md="3.5" size="auto" class="form-col" *ngIf="!isNext" [ngClass]="{animation:true}">
       <ion-title color="primary">Informações da reserva</ion-title>
@@ -138,10 +97,8 @@
           <ion-input fill="outline" type="email" placeholder="Digite seu melhor email" formControlName="email" [(ngModel)]="reservationUser.email"  clear-input="true" autocomplete="email">
             <span *ngIf="newReservationForm.controls.email.hasError('required')" slot="end" class="error-log">Email é obrigatório</span>
             <span *ngIf="newReservationForm.controls.email.hasError('email')" slot="end" class="error-log">Digite um email válido</span>
-            <span *ngIf="newReservationForm.controls.email.hasError('emailAlreadyExists')" slot="end" class="error-log">Email já cadastrado</span></ion-input>
-          
-          <ion-button type="submit" fill="solid" color="primary"  class="ion-padding-vertical btn-submit" [disabled]="!newReservationForm.valid" (click)="onSubmit()">Confirmar reserva!</ion-button>
-
+            <span *ngIf="newReservationForm.controls.email.hasError('emailAlreadyExists')" slot="end" class="error-log">Email já registrado</span></ion-input>
+            <p class="ion-padding-top notification">*Todas as reservas estão sujeitas à aprovação. O Status da sua reserva será notificado no e-mail fornecido</p>
         </ion-row>
         </form>
       
@@ -151,10 +108,12 @@
     <ion-row style="width: 100%;" class="ion-padding-top" *ngIf="isAllChecks">
       <ion-toolbar>
         <ion-buttons slot="start" *ngIf="isNext">
-        <ion-button fill="outline" color="secondary" size="large" class="confirm-button" (click)="returnToReservation()"> Voltar</ion-button>
+        <ion-button fill="outline" color="secondary" size="large" class="confirm-button toolbar-buttons" (click)="returnToReservation()"> Voltar</ion-button>
       </ion-buttons>
         <ion-buttons slot="end">
-          <ion-button fill="solid" color="secondary" size="large" class="confirm-button" (click)="goToConfirm()"> Avançar</ion-button>
+          <ion-button fill="solid" color="secondary" size="large" class="confirm-button toolbar-buttons" (click)="goToConfirm()" *ngIf="!isOpenForm"> Avançar</ion-button>
+          <ion-button type="submit" fill="solid" color="primary" size="large" class="ion-padding-vertical btn-submit toolbar-buttons" [disabled]="!newReservationForm.valid" (click)="onSubmit()" *ngIf="isOpenForm">Confirmar reserva!</ion-button>
+
         </ion-buttons>
     </ion-toolbar>
     </ion-row>
@@ -162,5 +121,13 @@
   </ion-row>
 
 </section>
+
+<app-return-page
+[title]="title"
+[content]="content"
+[returnToPage]="backToOwner"
+*ngIf="isReservationSend"
+>
+</app-return-page>
 </ion-content>
 

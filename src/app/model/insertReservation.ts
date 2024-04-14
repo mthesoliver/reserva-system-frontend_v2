@@ -1,4 +1,5 @@
 export class InsertReservation{
+    serviceId:number;
     startTime:string;
     endTime:string;
     day:string;

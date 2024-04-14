@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SharedModule } from 'src/app/modules/common-module/shared';
 import { OwnerInfoComponent } from '../admin-dashboard/components/owner-info/owner-info.component';
 import { ReservationListComponent } from '../admin-dashboard/components/reservation-list/reservation-list.component';
@@ -7,6 +7,8 @@ import { UsersService } from 'src/app/services/users.service';
 import { Subscription } from 'rxjs';
 import { ViewWillEnter, ViewWillLeave } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { ReservationsService } from 'src/app/services/reservations.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-reservas',
@@ -16,19 +18,26 @@ import { Router } from '@angular/router';
   imports: [
     SharedModule,
     OwnerInfoComponent,
+    FormsModule,
     ReservationListComponent
   ]
 })
 export class ReservasPage implements OnInit, OnDestroy, ViewWillLeave, ViewWillEnter {
+  @ViewChild(ReservationListComponent) reservationList!:ReservationListComponent;
+
   currentUserId: number;
   servicesId: number[] = [];
   subReservation: Subscription;
   loaded:boolean;
+  isSearchFill:boolean=false
+  totalReservas:string;
+  searchText:string = '';
 
-  constructor(private resourceService: ResourceService, private userService: UsersService, private router:Router) { }
+  constructor(private resourceService: ResourceService, private userService: UsersService, private router:Router, private reservationService:ReservationsService) { }
 
   ngOnInit() {
     this.subReservation = this.loadData()
+    this.searchText
   }
 
   ngOnDestroy(): void {
@@ -37,6 +46,11 @@ export class ReservasPage implements OnInit, OnDestroy, ViewWillLeave, ViewWillE
 
   ionViewWillEnter(): void {
     this.subReservation = this.loadData()
+    if(localStorage.getItem('reservas')){
+      this.totalReservas = JSON.parse(localStorage.getItem('reservas')).length;
+    }else{
+      this.totalReservas='...';
+    }
   }
 
   ionViewWillLeave(): void {
@@ -61,5 +75,20 @@ export class ReservasPage implements OnInit, OnDestroy, ViewWillLeave, ViewWillE
           this.loaded = true
         })
       })
+  }
+
+  search(){
+    if(this.searchText !== ''){
+      this.isSearchFill = true;
+      this.reservationList.search(this.searchText);
+    }else{
+      this.isSearchFill = false;
+    }
+  }
+
+  clear(){
+    this.isSearchFill=false;
+    this.searchText='';
+    this.reservationList.clear();
   }
 }

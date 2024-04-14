@@ -46,7 +46,7 @@ export class OwnerInfoComponent  implements OnInit {
     this.currentUserInfoName= data.name;
     this.currentUserInfoEmail= data.email;
     this.currentUserInfoPhone= data.phone;
-    this.publicLink = (location.origin+'/page/'+this.currentUserInfoName.replace(' ', '%20'));
+    this.publicLink = (location.origin+'/page/'+this.currentUserInfoName);
   }
 
   editInfo(){

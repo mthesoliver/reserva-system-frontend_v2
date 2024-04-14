@@ -1,6 +1,6 @@
 #service-row{
     display: flex;
-    align-items: center;
+    align-items: start;
     margin-bottom: 2rem;
 }
 
@@ -35,4 +35,11 @@
     display: inline-flex;
     max-width: 40%;
     margin-right: 1rem;
+}
+
+.service-name{
+    margin-top: 2rem!important;
+    font-size: 6rem!important;
+    color: #ededed;
+    margin-bottom: 3rem!important;
 }

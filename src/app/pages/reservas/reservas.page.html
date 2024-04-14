@@ -8,11 +8,27 @@
 
     <ion-grid>
       <ion-row class="media-container ion-align-items-start">
-          <h1>Últimas reservas</h1>
+        <ion-col>
+          <h1>Todas as reservas</h1>
+        </ion-col>
+        <ion-col>
+          <ion-item>
+            <p slot="end" style="color:#858585">Total de reservas ({{totalReservas}})</p>
+          </ion-item>
+        </ion-col>
+
       </ion-row>
+
+      <ion-row class="ion-margin-bottom">
+        <ion-input fill="outline" type="text" placeholder="Digite o nome do cliente..." name="busca" [(ngModel)]="searchText" [enterkeyhint]="search()">
+          <ion-icon name="search" slot="start"></ion-icon>
+        <ion-button slot="end" fill="outline" color="danger" (click)="clear()" *ngIf="isSearchFill" >Limpar</ion-button>
+      </ion-input>
+      </ion-row>
+
     </ion-grid>
 
-    <app-reservation-list *ngIf="loaded"
-    ></app-reservation-list>
+
+    <app-reservation-list *ngIf="loaded" [allowPagination]="true"></app-reservation-list>
   </section>
 </ion-content>

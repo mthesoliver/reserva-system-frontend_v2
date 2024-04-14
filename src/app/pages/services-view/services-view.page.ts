@@ -296,8 +296,13 @@ export class ServicesViewPage implements OnInit, OnDestroy {
     let horarioFinal = data.endTime.slice(0, 5);
 
     for (let i = parseInt(horarioInicio); i < parseInt(horarioFinal); i++) {
-      this.horariosDisponiveis.push(i + ':00h');
-      this.horariosDisponiveis.push(i + ':30h');
+      if(i<10){
+      this.horariosDisponiveis.push('0' + i + ':00h');
+      this.horariosDisponiveis.push('0' + i + ':30h');
+      }else{
+        this.horariosDisponiveis.push(i + ':00h');
+        this.horariosDisponiveis.push(i + ':30h');
+      }
     }
   }
 
@@ -309,9 +314,10 @@ export class ServicesViewPage implements OnInit, OnDestroy {
     }
   }
 
+
   @ViewChild(IonModal) modal: IonModal;
 
-  message = 'This modal example uses triggers to automatically open a modal when the button is clicked.';
+  message = '';
   name: string;
 
   cancel() {
@@ -324,11 +330,8 @@ export class ServicesViewPage implements OnInit, OnDestroy {
     this.router.navigate(['admin/dashboard']);
   }
 
-  onWillDismiss(event: Event) {
-    const ev = event as CustomEvent<OverlayEventDetail<string>>;
-    if (ev.detail.role === 'confirm') {
-      this.message = `Deleted, ${ev.detail.data}!`;
-    }
+  onWillDismiss() {
+    this.modal.dismiss();
   }
 
 }
