@@ -1,3 +1,4 @@
+import { CriptoService } from 'src/app/services/cripto.service';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SharedModule } from 'src/app/modules/common-module/shared';
 import { OwnerInfoComponent } from '../admin-dashboard/components/owner-info/owner-info.component';
@@ -33,7 +34,7 @@ export class ReservasPage implements OnInit, OnDestroy, ViewWillLeave, ViewWillE
   totalReservas:string;
   searchText:string = '';
 
-  constructor(private resourceService: ResourceService, private userService: UsersService, private router:Router, private reservationService:ReservationsService) { }
+  constructor(private resourceService: ResourceService, private userService: UsersService, private router:Router, private reservationService:ReservationsService, private criptoService:CriptoService) { }
 
   ngOnInit() {
     this.subReservation = this.loadData()
@@ -47,7 +48,7 @@ export class ReservasPage implements OnInit, OnDestroy, ViewWillLeave, ViewWillE
   ionViewWillEnter(): void {
     this.subReservation = this.loadData()
     if(localStorage.getItem('reservas')){
-      this.totalReservas = JSON.parse(localStorage.getItem('reservas')).length;
+      this.totalReservas = JSON.parse(this.criptoService.getEncryptItem('reservas')).length;
     }else{
       this.totalReservas='...';
     }

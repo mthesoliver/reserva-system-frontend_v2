@@ -7,6 +7,7 @@
   [currentUserInfoEmail]="currentUserInfoEmail"
   [currentUserInfoName]="currentUserInfoName"
   [currentUserInfoPhone]="currentUserInfoPhone"
+  [profileImg]="profileImg"
   ></app-owner-info>
 
   <ion-row class="services-calendar-container" id="service-row">
@@ -38,6 +39,7 @@
         </ion-nav>
       </ion-toolbar>
       <calendar class="services-calendar-details" 
+      [eventSource]="eventSource" 
       [calendarMode]="calendar.mode"
         [currentDate]="calendar.currentDate" 
         [markDisabled]="markDisabled" [timeInterval]="30" 
@@ -56,7 +58,7 @@
     <ion-col size-lg="3" size-md="3.5" size="auto" class="time-col" *ngIf="!isNext" [ngClass]="{animation:true}" >
       <ion-title color="primary">Horários disponíveis</ion-title>
       <ion-segment>
-        <ion-list style="display: flex; flex-direction: column;">
+        <ion-list style="display: flex; flex-direction: column;"  #timeButtons>
           <ion-button 
           (click)="selectHour($event)"
           fill="outline" *ngFor="let horas of horariosDisponiveis" class="hours-item">{{horas}}
@@ -87,17 +89,26 @@
         <form [formGroup]="newReservationForm" novalidate method="POST" class="reservation-form">
           <ion-row>
           <span class="input-title">Seu nome:</span>
-          <ion-input fill="outline" type="text" placeholder="Digite seu nome" formControlName="nome" [(ngModel)]="reservationUser.name" clear-input="true" autocomplete="name" size="sm"></ion-input>
+          <ion-input fill="outline" type="text" placeholder="Digite seu nome" formControlName="nome" [(ngModel)]="reservationUser.name" clear-input="true" autocomplete="name" size="sm">
+            <span *ngIf="newReservationForm.controls.nome.hasError('required')" slot="end" class="error-log">Nome é obrigatório</span>
+          </ion-input>
 
           <span class="input-title">Seu telefone:</span>
           <ion-input fill="outline" type="tel" placeholder="Digite seu telefone" formControlName="phone" [(ngModel)]="reservationUser.phone"  [maskito]="phoneMask"
-          [maskitoElement]="maskPredicate" clear-input="true" autocomplete="tel-national"></ion-input>
+          [maskitoElement]="maskPredicate" clear-input="true" autocomplete="tel-national">
+          <span *ngIf="newReservationForm.controls.phone.hasError('required')" slot="end" class="error-log">Telefone é obrigatório</span>
+        </ion-input>
 
           <span class="input-title">Seu melhor email:</span>
           <ion-input fill="outline" type="email" placeholder="Digite seu melhor email" formControlName="email" [(ngModel)]="reservationUser.email"  clear-input="true" autocomplete="email">
             <span *ngIf="newReservationForm.controls.email.hasError('required')" slot="end" class="error-log">Email é obrigatório</span>
             <span *ngIf="newReservationForm.controls.email.hasError('email')" slot="end" class="error-log">Digite um email válido</span>
             <span *ngIf="newReservationForm.controls.email.hasError('emailAlreadyExists')" slot="end" class="error-log">Email já registrado</span></ion-input>
+
+            <span class="input-title">Quer deixar alguma informação adicional?</span>
+            <ion-textarea label="Opcional" labelPlacement="stacked" [autoGrow]="true" fill="outline" placeholder="Em poucas palavras escreva alguma informação adicional" [counter]="true"
+            maxlength="120" [counterFormatter]="customCounterFormatter" #comment></ion-textarea>
+            
             <p class="ion-padding-top notification">*Todas as reservas estão sujeitas à aprovação. O Status da sua reserva será notificado no e-mail fornecido</p>
         </ion-row>
         </form>
@@ -126,6 +137,7 @@
 [title]="title"
 [content]="content"
 [returnToPage]="backToOwner"
+buttonTittle="Retornar para página anterior"
 *ngIf="isReservationSend"
 >
 </app-return-page>

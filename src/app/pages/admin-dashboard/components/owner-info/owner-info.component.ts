@@ -23,7 +23,7 @@ export class OwnerInfoComponent  implements OnInit {
   currentUserInfoPhone: string  = ' ';
 
   publicLink:string="";
-
+  @Input()
   profileImg:string = 'https://blog.davidstea.com/en/wp-content/uploads/2018/04/Placeholder.jpg'
 
   constructor(private resourceService: ResourceService, private router:Router, private clipboard: Clipboard) { 
@@ -46,6 +46,9 @@ export class OwnerInfoComponent  implements OnInit {
     this.currentUserInfoName= data.name;
     this.currentUserInfoEmail= data.email;
     this.currentUserInfoPhone= data.phone;
+    if(data.getProfilePicture.name !== null){
+      this.profileImg = `/resource/pic/db/${data.getProfilePicture.name}`
+    }
     this.publicLink = (location.origin+'/page/'+this.currentUserInfoName);
   }
 

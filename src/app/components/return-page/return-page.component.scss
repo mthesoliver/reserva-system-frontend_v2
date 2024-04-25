@@ -4,6 +4,11 @@
     text-align: center;
 }
 
+.content-container{
+    display: flex;
+    flex-direction: column;
+}
+
 .container {
     height: 60vh;
     display: flex;

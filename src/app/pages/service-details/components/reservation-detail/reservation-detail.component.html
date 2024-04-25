@@ -7,11 +7,16 @@
     <p>Telefone: {{reservationPhone}}</p>
     <p>Data: {{reservationDate}}</p>
     <p>Horário: {{reservationHora }}</p>
+    <p *ngIf="addInfoExists">Informações Adicionais:<i>{{ reservationAddInfo }}</i> </p>
     <p>Status: <span [ngClass]="setStatusColor(reservationStatus)">{{reservationStatus}}</span></p>
 
     <ion-buttons *ngIf="isAguardando">
-      <ion-button fill="outline" color="primary" id="edit-reservation" (click)="click()">Editar status da
+      <ion-button fill="outline" color="primary" (click)="click()">Editar status da
         reserva</ion-button>
+    </ion-buttons>
+
+    <ion-buttons *ngIf="isRejeitado">
+      <ion-button fill="outline" color="danger" (click)="remove()">Remover reserva</ion-button>
     </ion-buttons>
   </div>
 
@@ -37,6 +42,7 @@
             <p>Telefone: {{reservationPhone}}</p>
             <p>Data: {{reservationDate}}</p>
             <p>Horário: {{reservationHora }}</p>
+            <p *ngIf="addInfoExists">Informações Adicionais: <i>{{ reservationAddInfo }}</i></p>
             <p>Status atual: <span [ngClass]="setStatusColor(reservationStatus)">{{reservationStatus}}</span></p>
 
             <ion-select label="Selecione o status" okText="Confirmar status" cancelText="Cancelar" [(ngModel)]="reservationStatus" fill="outline">
@@ -47,6 +53,34 @@
             <ion-buttons class="ion-justify-content-between ion-padding-top">
               <ion-button fill="outline" color="danger" (click)="cancel()">Cancelar</ion-button>
               <ion-button fill="solid" color="primary" (click)="updateReservationStatus()">Confirmar alteração</ion-button>
+            </ion-buttons>
+
+          </section>
+
+        </div>
+
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal (willDismiss)="removeModal.dismiss()" #removeModal>
+    <ng-template>
+        <div class=" modal-content">
+          <ion-toolbar class="modal-toolbar">
+            <ion-icon slot="end" name="close" size="large" (click)="removeModal.dismiss()"></ion-icon>
+        </ion-toolbar>
+          <ion-title class="ion-text-center" color="danger">Remover reserva</ion-title>
+          <p class="ion-text-center ion-padding-top ion-padding-horizontal" >Se realmente deseja remover esta reserva basta confirmar a remoção</p>
+
+          <section>
+            <p>Nome: <strong>{{reservationName }}</strong></p>
+            <p>Email: {{reservationEmail}}</p>
+            <p>Telefone: {{reservationPhone}}</p>
+            <p>Data: {{reservationDate}}</p>
+            <p>Horário: {{reservationHora }}</p>
+
+            <ion-buttons class="ion-justify-content-between ion-padding-top">
+              <ion-button fill="outline" color="medium" (click)="cancel()">Cancelar</ion-button>
+              <ion-button fill="solid" color="danger" (click)="removeReservation()">Confirmar remoção</ion-button>
             </ion-buttons>
 
           </section>

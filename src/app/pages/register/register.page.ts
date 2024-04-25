@@ -1,5 +1,5 @@
 import { UsersService } from './../../services/users.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators, FormBuilder } from '@angular/forms';
 import { SharedModule } from 'src/app/modules/common-module/shared';
 import { MaskitoOptions, MaskitoElementPredicate } from '@maskito/core';
@@ -7,7 +7,9 @@ import { MaskitoDirective } from '@maskito/angular';
 import { MenuVisibilityService } from 'src/app/services/menu-visibility.service';
 import { HttpModuleModule } from 'src/app/modules/http-module/http-module.module';
 import { User } from 'src/app/model/users';
-import {  Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { Power4, gsap } from 'gsap';
+import { ReturnPageComponent } from 'src/app/components/return-page/return-page.component';
 
 @Component({
   selector: 'app-register',
@@ -19,10 +21,17 @@ import {  Router } from '@angular/router';
     HttpModuleModule,
     FormsModule,
     ReactiveFormsModule,
-    MaskitoDirective
+    MaskitoDirective,
+    ReturnPageComponent
   ]
 })
 export class RegisterPage implements OnInit {
+
+  title:string = "Cadastro feito com sucesso!";
+  content:string = "Para finalizar o seu cadastro verifique seu e-mail para poder fazer a confirmação.";
+  isRegistrationSend:boolean=false;
+  backToLogin:string = "http://127.0.0.1:9000/login";
+  isBgDark:boolean=true;
 
   iconShow:string = '';
   passwordShow:string = '';
@@ -56,6 +65,7 @@ export class RegisterPage implements OnInit {
   constructor(private fb: FormBuilder, private menuVisibilityService: MenuVisibilityService, private userService:UsersService, private router: Router) {
     this.menuVisibilityService.setMenuVisibility(false);
   }
+  
 
   ngOnInit() {
     this.iconShow = 'eye';
@@ -65,7 +75,39 @@ export class RegisterPage implements OnInit {
     this.userService.getUsersEmail().subscribe(users => {
       this.usersList = users; 
       this.registerForm.get('email').addValidators([this.emailExists.bind(this)]);
-    });;
+    });
+
+    
+      const bg_parallax = document.getElementsByClassName("login-container"); 
+      console.log(bg_parallax);
+      Array.prototype.forEach.call(bg_parallax, (el: HTMLElement) => {
+        let bgPos = {
+          x: 50,
+          y: 50
+        };
+  
+        const delta = -0.05;
+        const reactToTweenUpdate = () => {
+          let winW = window.innerWidth / 2;
+          let winH = window.innerHeight / 2;
+          el.style.backgroundPosition = `${50 - (bgPos.x - winW) * delta}% ${50 - (bgPos.y - winH) * delta}%`;
+        };
+  
+        let tween = gsap.to(bgPos,{
+          onUpdate: () => reactToTweenUpdate(),
+          ease:Power4.easeOut,
+        }).duration(1);
+  
+        el.onmousemove = (event) => {
+          gsap.to(bgPos,{
+            x:event.clientX ,
+            y:event.clientY ,
+            ease:Power4.easeOut
+          }).duration(1);
+          
+          tween.restart();
+        };
+    });
   }
 
   passwordConfirmed(control: FormControl){
@@ -99,8 +141,10 @@ export class RegisterPage implements OnInit {
     this.newUserRegister.telefone = phone.replace('(', '').replace(')', '').replace('-','').replace(' ', '').trim();
     }
     this.newUserRegister.funcao='ADMIN';
-    this.userService.postNewUser(this.newUserRegister).subscribe();
-    this.router.navigate(['/login']);
+    this.userService.postNewUser(this.newUserRegister).subscribe(data=>{
+      this.isRegistrationSend = true;
+      this.isBgDark=false;
+    });
   }
 
 }

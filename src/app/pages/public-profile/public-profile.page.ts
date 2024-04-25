@@ -1,3 +1,4 @@
+import { ViewWillEnter, ViewWillLeave } from '@ionic/angular';
 import { Component, OnInit } from '@angular/core';
 import { SharedModule } from 'src/app/modules/common-module/shared';
 import { OwnerInfoComponent } from '../admin-dashboard/components/owner-info/owner-info.component';
@@ -19,7 +20,7 @@ import { UsersService } from 'src/app/services/users.service';
     ServicesBoardComponent
   ]
 })
-export class PublicProfilePage implements OnInit {
+export class PublicProfilePage implements OnInit, ViewWillEnter, ViewWillLeave {
 
   subOwnerInfos: Subscription
 
@@ -37,6 +38,7 @@ export class PublicProfilePage implements OnInit {
   currentUserInfoName: string;
   currentUserInfoEmail: string;
   currentUserInfoPhone: string;
+  profileImg:string;
 
   constructor(private resourceService: ResourceService, private services: ServicesService, private userService: UsersService, private router: Router, private activatedRoute: ActivatedRoute) {
     this.serviceOwnerName = this.activatedRoute.snapshot.paramMap.get("name");
@@ -54,8 +56,6 @@ export class PublicProfilePage implements OnInit {
   ngOnInit() {
     return this.userService.getUserById(this.serviceOwnerName).subscribe(
       data => {
-        
-    console.log(data);
         this.userId = data.id;
       }
     )
@@ -68,10 +68,14 @@ export class PublicProfilePage implements OnInit {
   loadOwnerInfos() {
     return this.userService.getUserById(this.serviceOwnerName).subscribe(
       data => {
+        console.log(data.profilePicture.name);
         this.currentUserInfoName = data.name;
         this.currentUserInfoEmail = data.email;
         this.currentUserInfoPhone = data.phone;
         this.userId = data.id;
+        if(data.profilePicture.name !== null){
+          this.profileImg = `/resource/pic/db/${data.profilePicture.name}`
+        }
         this.loadOwnerServices(data.services)
       }
     )

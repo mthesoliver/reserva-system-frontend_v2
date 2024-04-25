@@ -23,3 +23,63 @@ h1{
 ion-icon {
     color: #adadad;
 }
+
+ion-content{
+    --padding-top: 20px;
+}
+
+.bg-color{
+    --background: #12141D!important;
+}
+
+.login-container{
+    max-width: 90%;
+    position: relative;
+    margin: auto;
+    display: flex;
+    background-image: url(http://localhost:8080/resource/pic/db/jaReserva_login_bg.webp);
+    background-repeat: no-repeat;
+    background-size: 110%;
+    background-position: 50% 50%;
+    border-radius: 26px;
+    padding: 1.5rem
+} 
+
+.login-form form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 26px;
+    background-color: #f9f9f9;
+    padding-inline:3rem;
+}
+
+.login-form form h2{
+    text-align: center;
+    font-size: 36px;
+    color: var(--ion-color-primary)
+}
+
+.login-form form p{
+    text-align: center;
+    font-size: 12px;
+    line-height: 16px;
+    padding-inline:2rem;
+}
+
+.login-img{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 3rem
+}
+
+.main-logo{
+    color: #fff!important;
+    font-size: 80px !important;
+}
+
+.hide{
+    display: none;
+}

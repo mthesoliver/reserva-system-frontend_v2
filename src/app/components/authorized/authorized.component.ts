@@ -16,7 +16,6 @@ export class AuthorizedComponent  implements OnInit {
   constructor(private activatedRoute: ActivatedRoute, private router: Router) { }
 
   ngOnInit():void {
-    alert('break')
   }
 
 }

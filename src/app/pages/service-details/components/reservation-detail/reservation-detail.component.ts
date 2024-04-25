@@ -32,15 +32,17 @@ export class ReservationDetailComponent implements OnInit, OnChanges {
   reservationHora: string;
   reservationPhone: string;
   reservationDate: string;
+  reservationAddInfo:string;
 
   notNull: boolean = false;
+  addInfoExists:boolean = false;
   isAguardando:boolean;
+  isRejeitado:boolean;
 
 
   constructor(private reservationService: ReservationsService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    //changes = this.reservationId ? changes : {};
     changes = {
       'reservationId': changes['reservationId']
     };
@@ -78,6 +80,11 @@ export class ReservationDetailComponent implements OnInit, OnChanges {
           this.reservationStatus = this.reservationInfo.status;
           this.reservationHora = 'Das ' + this.reservationInfo.startTime.split(':').slice(0, 2).join(':') + ' até as ' + this.reservationInfo.endTime.split(':').slice(0, 2).join(':');
           this.reservationDate = this.reservationInfo.date.split('-').reverse().join('/').toString();
+
+          if(this.reservationInfo.additionalInfo !== null){
+            this.addInfoExists = true;
+            this.reservationAddInfo = this.reservationInfo.additionalInfo;
+          }
           this.notNull = true;
         }
       });
@@ -86,6 +93,12 @@ export class ReservationDetailComponent implements OnInit, OnChanges {
         this.isAguardando = true;
       }else{
         this.isAguardando = false;
+      }
+
+      if(this.reservationStatus.includes('REJEITADO')){
+        this.isRejeitado = true;
+      }else{
+        this.isRejeitado = false;
       }
     } else {
       return console.log('Nenhuma reserva selecionada');
@@ -117,11 +130,21 @@ export class ReservationDetailComponent implements OnInit, OnChanges {
     this.modal.present();
   }
 
+  @ViewChild('removeModal') removeModal:IonModal;
+  remove(){
+    this.removeModal.present();
+  }
+
   updateReservationStatus(){
     let status = {
       'status': this.reservationStatus
     }
     this.reservationService.updateReservation(this.serviceId, this.reservationId, status).subscribe();
+    location.reload();
+  }
+
+  removeReservation(){
+    this.reservationService.deleteReservationById(this.serviceId, this.reservationId).subscribe();
     location.reload();
   }
 }

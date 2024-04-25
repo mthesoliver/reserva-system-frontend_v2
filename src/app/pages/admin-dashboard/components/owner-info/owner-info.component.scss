@@ -1,11 +1,14 @@
 .bg-color{
     background-color: #F2F2F2;
+    border: #e7e7e7 1px solid;
 }
 
 .profile-img{
     max-width:160px ;
     max-height: 160px;
     border-radius: 50%;
+    aspect-ratio:1/1;
+    object-fit: cover;
 }
 
 .info-list{

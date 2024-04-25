@@ -34,11 +34,6 @@ export class AppComponent implements OnInit{
       this.currentUser = data;
       this.roleUser = data.role;
 
-      this.userService.getUserById(this.currentUser.id).subscribe(
-        data => {
-          this.resourceService.setServiceIdToStorage(data.services[0].serviceId)
-        })
-
       this.resourceService.setUserRoleToStorage(this.roleUser)
     });
 }

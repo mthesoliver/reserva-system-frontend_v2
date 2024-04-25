@@ -4,6 +4,7 @@ export class InsertReservation{
     endTime:string;
     day:string;
     date:string;
+    additionalInfo?:string;
     user:{
         name:string,
         email:string,

@@ -17,6 +17,8 @@ export class ReturnPageComponent  implements OnInit {
   content:string='';
   @Input()
   returnToPage:string='';
+  @Input()
+  buttonTittle:string='';
   constructor() { }
 
   ngOnInit() {}

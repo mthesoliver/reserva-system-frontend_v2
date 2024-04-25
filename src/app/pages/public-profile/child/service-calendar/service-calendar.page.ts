@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,10 +10,19 @@ import { ReturnPageComponent } from 'src/app/components/return-page/return-page.
 import { InsertReservation } from 'src/app/model/insertReservation';
 import { SharedModule } from 'src/app/modules/common-module/shared';
 import { OwnerInfoComponent } from 'src/app/pages/admin-dashboard/components/owner-info/owner-info.component';
+import { CriptoService } from 'src/app/services/cripto.service';
 import { ReservationsService } from 'src/app/services/reservations.service';
 import { ServicesService } from 'src/app/services/services.service';
 import { UsersService } from 'src/app/services/users.service';
 
+export interface IEvent {
+  id:number;
+  allDay: boolean;
+  endTime: Date;
+  startTime: Date;
+  title: string;
+  category?: string;
+}
 @Component({
   selector: 'app-service-calendar',
   templateUrl: './service-calendar.page.html',
@@ -30,6 +40,8 @@ import { UsersService } from 'src/app/services/users.service';
 })
 export class ServiceCalendarPage implements OnInit , OnDestroy {
   @ViewChild(CalendarComponent) myCal!: CalendarComponent;
+  @ViewChild('timeButtons') timeButtons: any;
+  @ViewChild('comment') comment:any;
 
   selectedService:any;
   subService: Subscription;
@@ -53,8 +65,11 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
   setStartHour: number = 0;
   setEndHour: number = 0;
 
+  eventSource;
   insertDiasOpen = [];
   horariosDisponiveis = [];
+
+  reservationsData: any[] = [];
 
   isToday: boolean;
   isAllChecks:boolean = false;
@@ -116,15 +131,14 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
   serviceId:any;
   serviceOwner:string;
   serviceName:string;
+  profileImg:string;
 
   backToOwner:string;
-  
   usersList: any[] = [];
 
-  constructor(private activatedRoute:ActivatedRoute, private fb: FormBuilder, private userService:UsersService, private servicesService:ServicesService, private reservationService:ReservationsService, private router:Router) { }
+  constructor(private criptoService:CriptoService, private activatedRoute:ActivatedRoute, private fb: FormBuilder, private userService:UsersService, private servicesService:ServicesService, private reservationService:ReservationsService, private router:Router) { }
 
   ngOnInit() {
-    //this.isReservationSend = true
     this.serviceId = this.activatedRoute.snapshot.paramMap.get('serviceId');
     this.serviceOwner = this.activatedRoute.snapshot.paramMap.get('name');
     this.backToOwner = location.origin +'/'+ this.activatedRoute.snapshot.url.slice(0,2).join('/').split('%2520').join('%20');
@@ -143,6 +157,7 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
   ngOnDestroy(): void {
     this.subService.unsubscribe();
     this.subSelectedService.unsubscribe();
+    localStorage.removeItem('reservas');
   }
 
   emailExists(control:FormControl){
@@ -203,6 +218,40 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
     );
     
     this.checkReservation()
+    
+    let available:any[]=[]
+    available = this.timeButtons.el.children;  
+    
+    for(let el of available){
+      el.disabled=false
+      el.setAttribute("color","");
+    }
+
+    ev.events.forEach(ev=>{
+      let index:number
+      for(let hr of available){
+        if(hr.innerText.includes(ev.startTime.toLocaleTimeString().split(':').slice(0,2).join(':'))){
+          hr.disabled=true;
+          hr.setAttribute("color","medium");
+          index = this.horariosDisponiveis.indexOf(hr.innerText) + 1;
+        }
+        if(hr.innerText.includes(this.horariosDisponiveis[index])){
+          hr.disabled=true;
+          hr.setAttribute("color","medium");
+        }
+        if(hr.innerText.includes(ev.endTime.toLocaleTimeString().split(':').slice(0,2).join(':'))){
+          hr.disabled=true;
+          hr.setAttribute("color","medium");
+        }
+      }
+    });
+
+    console.log(
+      'Selected time: ' +
+      ev.selectedTime.toLocaleString() 
+    );
+
+    console.log(ev.events);
   }
 
   onCurrentDateChanged(event: Date) {
@@ -288,6 +337,9 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
         this.currentUserInfoName = data.name;
         this.currentUserInfoEmail = data.email;
         this.currentUserInfoPhone = data.phone;
+        if(data.profilePicture.name !== null){
+          this.profileImg = `/resource/pic/db/${data.profilePicture.name}`
+        }
       }
     )
 }
@@ -299,10 +351,53 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
         this.setDaysOpen()
         this.availableHours(this.selectedService);
         this.serviceName = this.selectedService.serviceName;
+        this.criptoService.setItemToLocalStorage(JSON.stringify( data[0].reservations), 'reservas');
+        this.reservationsData = JSON.parse(this.criptoService.getEncryptItem('reservas'));
+        this.loadEventsOnCalendar();
 
         this.content=`Sua solicitação de reserva para ${this.selectedService.serviceName} da ${this.currentUserInfoName} foi realizada com sucesso. A confirmação da sua solicitação será encaminhada no e-mail fornecido, fique de olho para saber quando o Status da sua reserva for atualizado.`;
       }
     );
+  }
+
+  loadEventsOnCalendar() {
+    let filtered = this.reservationsData;
+
+    let event: any[] = [];
+
+    filtered.map(el => {
+      let startTime = el['startTime'];
+      let endTime = el['endTime'];
+      let ano = el['date'].substring(0,4);
+      let mes = parseInt(el['date'].substring(5,7)) -1;
+      let dia = el['date'].substring(8,10);
+      
+      let hour = startTime.split(':').slice(0,1).toString()
+      let minute = startTime.split(':').slice(1,2).toString()
+
+      let hour2 = endTime.split(':').slice(0,1).toString()
+      let minute2 = endTime.split(':').slice(1,2).toString()
+
+      let dataStart = new Date(Date.UTC(ano, mes, dia, parseInt(hour)+3, minute2 ))
+      let dataEnd = new Date(Date.UTC(ano, mes, dia, parseInt(hour2)+3, minute ))
+
+      let parseEvent: IEvent = {
+        'id': el['reservationId'],
+        'allDay': false,
+        'startTime': dataStart,
+        'endTime': dataEnd,
+        'title': 'Horário indisponível',
+        'category': el['status']
+      }
+
+      if(parseEvent.category !== "REJEITADO"){
+        event.push(parseEvent);
+      }
+
+      return event;
+    });
+
+    this.eventSource = event;
   }
 
   convertDays(day:any){
@@ -423,7 +518,9 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
     }
   }
 
-  
+  customCounterFormatter(inputLength: number, maxLength: number) {
+    return `${maxLength - inputLength} caracteres restantes`;
+  }
 
   onSubmit() {
     let phone:string = this.newReservationForm.value.phone;
@@ -435,8 +532,12 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
     this.newReservation.day = this.setDaysToDatabase(this.newReservation.day);
 
     this.newReservation.user = this.reservationUser;
-    console.log(this.newReservation);
-    this.reservationService.insertNewReservation(this.serviceId, this.newReservation).subscribe();
+    if(this.comment.value === ''){
+      this.newReservation.additionalInfo = null;
+    }else this.newReservation.additionalInfo = this.comment.value;
+    
+    this.reservationService.insertNewReservation(this.serviceId, this.newReservation).subscribe(()=>{
     this.isReservationSend = true;
+    });
   }
 }

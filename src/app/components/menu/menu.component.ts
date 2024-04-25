@@ -40,13 +40,11 @@ export class MenuComponent implements OnInit {
     this.getAdmin();
   }
 
-  // onLogout(): void {
-  //   location.href = this.logout_uri;
-  // }
-
   onLogout(){
     this.resourceService.clearUserRoleToStorage();
     this.resourceService.clearServiceIdToStorage();
+    localStorage.removeItem('reservas');
+    localStorage.removeItem('horas');
     window.location.href = 'http://127.0.0.1:9000/logout';
   }
 
@@ -67,7 +65,7 @@ export class MenuComponent implements OnInit {
 
   getAdmin(){
     this.resourceService.logged().subscribe(data =>{
-      if(data.message.includes('ADMIN')){
+      if(data.message.includes('ADMIN') || data.message.includes('OIDC_USER')){
         this.isAdmin=true;
       }
     })

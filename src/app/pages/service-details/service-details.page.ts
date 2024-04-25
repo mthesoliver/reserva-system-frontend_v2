@@ -1,3 +1,4 @@
+import { CriptoService } from 'src/app/services/cripto.service';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SharedModule } from 'src/app/modules/common-module/shared';
 import { OwnerInfoComponent } from '../admin-dashboard/components/owner-info/owner-info.component';
@@ -89,14 +90,14 @@ export class ServiceDetailsPage implements OnInit, OnDestroy {
   };
 
 
-  constructor(private activatedRoute: ActivatedRoute, private userService: UsersService, private resourceService: ResourceService, private serviceServices: ServicesService, private router: Router) { }
+  constructor(private activatedRoute: ActivatedRoute, private userService: UsersService, private resourceService: ResourceService, private serviceServices: ServicesService, private router: Router, private criptoService:CriptoService) { }
 
   ngOnInit() {
     this.serviceId = parseInt(this.activatedRoute.snapshot.paramMap.get("id"));
 
     this.subService = this.loadData()
 
-    this.reservationsData = JSON.parse(localStorage.getItem('reservas'));
+    this.reservationsData = JSON.parse(this.criptoService.getEncryptItem('reservas'));
   }
 
   ngOnDestroy(): void {
@@ -142,7 +143,7 @@ export class ServiceDetailsPage implements OnInit, OnDestroy {
       let startTime = el['horario'].split(' ').slice(0,1).toString().replace('h', '')
       let endTime = el['horario'].split(' ').slice(-1).toString().replace('h', '')
       let ano = el['data'].substring(0,4);
-      let mes = el['data'].substring(5,7);
+      let mes = parseInt(el['data'].substring(5,7)) -1;
       let dia = el.data.substring(8,10);
       
       let hour = startTime.split(':').slice(0,1).toString()
@@ -163,7 +164,10 @@ export class ServiceDetailsPage implements OnInit, OnDestroy {
         'category': el['situacao']
       }
 
-      event.push(parseEvent);
+      if(parseEvent.category !== "REJEITADO"){
+        event.push(parseEvent);
+      }
+
       return event;
     });
 

@@ -5,9 +5,10 @@ import { Reservation } from 'src/app/model/reservation';
 import { ServicesService } from 'src/app/services/services.service';
 import { ResourceService } from 'src/app/services/resource.service';
 import { UsersService } from 'src/app/services/users.service';
-import { Subscription, filter } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ReservationDetailComponent } from 'src/app/pages/service-details/components/reservation-detail/reservation-detail.component';
 import { IonModal } from '@ionic/angular';
+import { CriptoService } from 'src/app/services/cripto.service';
 
 
 const RESERVATION_LIST: Reservation[] = [
@@ -55,7 +56,7 @@ export class ReservationListComponent implements OnInit, OnDestroy {
 
   serviceNameList: any[] = [];
 
-  constructor(private services: ServicesService, private resourceService: ResourceService, private userService: UsersService) { }
+  constructor(private services: ServicesService, private resourceService: ResourceService, private userService: UsersService, private criptoService:CriptoService) { }
 
   ngOnInit() {
     this.subReservation = this.loadData();
@@ -110,8 +111,10 @@ export class ReservationListComponent implements OnInit, OnDestroy {
 
         let list = this.sortedNewest(this.reservationList);
 
-        localStorage.setItem('reservas', JSON.stringify(list));
-        let listLimiter: any[] = JSON.parse(localStorage.getItem('reservas'));
+        this.criptoService.setItemToLocalStorage(JSON.stringify(list), 'reservas');
+
+        let listLimiter: any[] = JSON.parse(this.criptoService.getEncryptItem('reservas'));
+
         if (this.limiter === null) {
           this.dataSource = listLimiter.slice(this.actualPage, this.actualPage + this.itensPerPage);
         } else {
@@ -127,7 +130,7 @@ export class ReservationListComponent implements OnInit, OnDestroy {
   }
 
   nextPage() {
-    let listLimiter: any[] = JSON.parse(localStorage.getItem('reservas'));
+    let listLimiter: any[] = JSON.parse(this.criptoService.getEncryptItem('reservas'));
 
     if (this.actualPage === 0) {
       this.actualPage = this.itensPerPage;
@@ -146,7 +149,7 @@ export class ReservationListComponent implements OnInit, OnDestroy {
   }
 
   previousPage() {
-    let listLimiter: any[] = JSON.parse(localStorage.getItem('reservas'));
+    let listLimiter: any[] = JSON.parse(this.criptoService.getEncryptItem('reservas'));
 
     if (this.actualPage !== this.itensPerPage && this.actualPage > 0) {
       this.actualPage -= this.itensPerPage;
@@ -178,7 +181,7 @@ export class ReservationListComponent implements OnInit, OnDestroy {
 
   search(searchText: string) {
     let find: any[] = [];
-    let listLimiter: any[] = JSON.parse(localStorage.getItem('reservas'));
+    let listLimiter: any[] = JSON.parse(this.criptoService.getEncryptItem('reservas'));
 
     if (searchText.length > 1) {
       this.reservationList.forEach(el => {
@@ -200,7 +203,7 @@ export class ReservationListComponent implements OnInit, OnDestroy {
   }
 
   clear() {
-    let listLimiter: any[] = JSON.parse(localStorage.getItem('reservas'));
+    let listLimiter: any[] = JSON.parse(this.criptoService.getEncryptItem('reservas'));
     this.allowPagination = true;
     this.dataSource = listLimiter.slice(this.actualPage, this.actualPage + this.itensPerPage);
   }
@@ -221,7 +224,6 @@ export class ReservationListComponent implements OnInit, OnDestroy {
   }
 
   clickedReservation(ev: any) {
-    console.log(ev);
     this.reservationId = ev.idReserva;
     this.services.getServicesByName(ev.servico).subscribe(
       data => {
@@ -239,7 +241,7 @@ export class ReservationListComponent implements OnInit, OnDestroy {
 
   filterBy(param: any, param2?: any, param3?: any) {
     this.filterChips = [];
-    let listLimiter: any[] = JSON.parse(localStorage.getItem('reservas'));
+    let listLimiter: any[] = JSON.parse(this.criptoService.getEncryptItem('reservas'));
     let filteredResults: any[] = [];
 
     if (param.value !== undefined && param2.value === undefined) {
@@ -313,8 +315,6 @@ export class ReservationListComponent implements OnInit, OnDestroy {
         this.filterChips.splice(this.filterChips.indexOf(el), 1);
       }
     });
-    console.log(this.filterChips);
-
     if (this.filterChips.length > 1) {
       this.filterBy(this.filterChips[0], this.filterChips[1], { 'value': undefined });
     } else if(this.filterChips.length === 1){

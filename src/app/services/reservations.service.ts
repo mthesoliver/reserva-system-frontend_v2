@@ -24,4 +24,8 @@ export class ReservationsService {
   updateReservation(serviceId:number, reservationId: number, body): Observable<any> {
     return this.httpClient.put<any>(`/resource/services/${serviceId}/reservations/${reservationId}`, body);
   }
+
+  deleteReservationById(serviceId:number, reservationId: number){
+    return this.httpClient.delete<any>(`/resource/services/${serviceId}/reservations/${reservationId}`);
+  }
 }
