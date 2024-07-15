@@ -2,6 +2,10 @@ ion-col {
     display: flex;
 }
 
+.time-stamp{
+    font-size: calc(var(--font-sm) + .125rem);
+}
+
 h1 {
     margin-top: 1rem;
     font-size: var(--font-lg);
@@ -29,10 +33,5 @@ app-services-board{
     .col-services {
         padding-block: 1rem;
         display: block;
-    }
-
-    app-reservation-list{
-        display: block;
-        overflow-x: scroll;
     }
 }

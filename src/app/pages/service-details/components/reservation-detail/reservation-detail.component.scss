@@ -1,17 +1,110 @@
 .aguardando {
-    color: var(--ion-color-warning-shade);
+    background: var(--ion-color-warning-shade);
+    color: #fff;
 }
 
 .aprovado {
-    color: var(--ion-color-success);
+    background: var(--ion-color-success);
+    color: #fff;
 }
 
 .rejeitado {
-    color: var(--ion-color-danger);
+    background: var(--ion-color-danger);
+    color: #fff;
 }
 
-ion-modal{
-    --max-width: 440px!important;
-    --max-height:480px!important;
-    --border-radius:var(--border-radius-md);
+ion-modal {
+    --max-width: 440px !important;
+    --height: fit-content;
+    --border-radius: var(--border-radius-md);
 }
+
+#update-reservation {
+    scale:.95;
+    margin-top: 3rem!important;
+}
+
+.reservation-top-box {
+    background: var(--ion-color-secondary);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    margin-top: -1rem;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.reservation-top-box ion-title {
+    color: #fff;
+    text-align: left;
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+.reservation-top-box-inner {
+    display: flex;
+    flex-direction: column;
+    color: #fff;
+    width: 100%;
+}
+
+.reservation-top-box-inner p {
+    margin-bottom: .225rem;
+}
+
+.reservation-md-box{
+    display: flex;
+    padding-left: 1rem;
+}
+.reservation-md-item :is(p,h2){
+    display: flex;
+    margin-bottom: 0;
+}
+.reservation-md-item h2{
+    font-size: calc(var(--font-md) + .125rem);
+}
+.reservation-md-item p{
+    font-size: var(--font-md);
+}
+
+.status-item{
+    margin-bottom: 2rem;
+}
+.status-item span{
+    font-size: calc(var(--font-sm) + 1px);
+}
+.status-tag{
+    position: relative;
+    top: .625rem;
+    left: -1rem;
+    padding-block: .625rem;
+    padding-inline:1.25rem;
+    border-radius: 20px;
+}
+
+.reservation-bottom-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%!important
+}
+
+.reservation-bottom-box ion-button{
+    width: 280px!important;
+    --border-radius: 6px!important;
+}
+
+
+.info-box{
+    padding: 1rem;
+    background: #efefef;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+.info-box h4{
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+
+

@@ -53,6 +53,7 @@ ion-button {
     text-transform: inherit;
     font-weight: 400;
     letter-spacing: 0;
+    --border-radius: 6px !important;
 }
 
 ion-grid {
@@ -166,6 +167,16 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     background-color: #4995ff;
 }
 
+@media screen and (max-width:768px) {
+    .table-bordered td {
+        font-size: 12px !important;
+    }
+    
+    .table-bordered tr td {
+        padding: .225rem !important;
+    }
+}
+
 /** scroll-bar **/
 /* width */
 ::-webkit-scrollbar {
@@ -225,4 +236,10 @@ ion-input{
     margin-top: 1rem!important;
     margin-bottom:0!important;
     min-height: 50px!important;
+}
+
+.event-detail-container ion-item:hover{
+    --background:var(--ion-color-secondary)!important;
+    color: #fff;
+    --border-radius:6px;
 }

@@ -1,15 +1,14 @@
 import { CriptoService } from 'src/app/services/cripto.service';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SharedModule } from 'src/app/modules/common-module/shared';
-import { OwnerInfoComponent } from '../admin-dashboard/components/owner-info/owner-info.component';
 import { CalendarComponent, CalendarMode, NgCalendarModule, Step } from 'ionic2-calendar';
 import { Subscription } from 'rxjs';
 import { UsersService } from 'src/app/services/users.service';
-import { ResourceService } from 'src/app/services/resource.service';
-import { ServicesService } from 'src/app/services/services.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ReservationListComponent } from '../admin-dashboard/components/reservation-list/reservation-list.component';
 import { ReservationDetailComponent } from './components/reservation-detail/reservation-detail.component';
+import { ConvertDaysService } from 'src/app/services/convert-days.service';
+import { ViewWillEnter, ViewWillLeave } from '@ionic/angular';
 export interface IEvent {
   id:number;
   allDay: boolean;
@@ -25,13 +24,12 @@ export interface IEvent {
   standalone: true,
   imports: [
     SharedModule,
-    OwnerInfoComponent,
     NgCalendarModule,
     ReservationListComponent,
     ReservationDetailComponent
   ]
 })
-export class ServiceDetailsPage implements OnInit, OnDestroy {
+export class ServiceDetailsPage implements OnInit, OnDestroy, ViewWillLeave, ViewWillEnter {
 
   @ViewChild(CalendarComponent) myCal!: CalendarComponent;
   @ViewChild('timeButtons') timeButtons: any;
@@ -39,8 +37,10 @@ export class ServiceDetailsPage implements OnInit, OnDestroy {
   subService: Subscription;
   serviceId: any;
   reservationId:number;
+  currentUserId:number;
 
   existentService: boolean;
+  isLoaded:boolean;
 
   actualService = {}
   serviceName:string;
@@ -64,54 +64,48 @@ export class ServiceDetailsPage implements OnInit, OnDestroy {
     dateFormatter: {
       formatMonthViewDay: function (date: Date) {
         return date.getDate().toLocaleString();
-      },
-      formatMonthViewDayHeader: function (date: Date) {
-        return 'MonMH';
-      },
-      formatMonthViewTitle: function (date: Date) {
-        return 'testMT';
-      },
-      formatWeekViewDayHeader: function (date: Date) {
-        return 'MonWH';
-      },
-      formatWeekViewTitle: function (date: Date) {
-        return 'testWT';
-      },
-      formatWeekViewHourColumn: function (date: Date) {
-        return 'testWH';
-      },
-      formatDayViewHourColumn: function (date: Date) {
-        return 'testDH';
-      },
-      formatDayViewTitle: function (date: Date) {
-        return 'testDT';
-      },
+      }
     },
   };
 
 
-  constructor(private activatedRoute: ActivatedRoute, private userService: UsersService, private resourceService: ResourceService, private serviceServices: ServicesService, private router: Router, private criptoService:CriptoService) { }
+  constructor(private activatedRoute: ActivatedRoute, private userService: UsersService, private criptoService:CriptoService, private convertDays:ConvertDaysService) { }
+
+  ionViewWillEnter(): void {
+    this.subService = this.loadData()
+    this.reservationsData = JSON.parse(this.criptoService.getEncryptItem('reservas'));
+    this.isLoaded = true;
+  }
+
+  ionViewWillLeave(): void {
+    this.reservationsData=[];
+    this.eventSource = [];
+    this.existentService = false;
+    this.isLoaded = false;
+    this.reservationId=null;
+    this.subService.unsubscribe();
+    this.onCurrentDateChanged(new Date);
+  }
 
   ngOnInit() {
-    this.serviceId = parseInt(this.activatedRoute.snapshot.paramMap.get("id"));
-
-    this.subService = this.loadData()
-
-    this.reservationsData = JSON.parse(this.criptoService.getEncryptItem('reservas'));
+    this.serviceId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
+    this.isLoaded = true;
+    this.today();
   }
 
   ngOnDestroy(): void {
+    this.reservationsData=[];
+    this.eventSource = [];
     this.existentService = false;
+    this.isLoaded = false;
     this.subService.unsubscribe();
     localStorage.removeItem('horas');
   }
 
   loadData() {
-    return this.resourceService.currentUser().subscribe(
-      data => {
-        this.userService.getUserById(data.id).subscribe(
+    this.currentUserId = parseInt(this.criptoService.getEncryptItem('userIdentification'));
+    return this.userService.getUserById(this.currentUserId).subscribe(
           data => {
-
             data.services.forEach(el => {
               if (el.serviceId === parseInt(location.href.split('/').slice(-1).toString())) {
                 this.actualService = el;
@@ -120,16 +114,14 @@ export class ServiceDetailsPage implements OnInit, OnDestroy {
                 this.setEndHour = parseInt(this.actualService['endTime']);
 
                 this.availableHours(this.actualService);
-                this.setDaysOpen();
+                this.setDaysOpen(this.actualService['availableDays']);
                 this.loadEventsOnCalendar(this.actualService);
                 
                 this.serviceName = this.actualService['serviceName'];
-
               }
             })
           }
         )
-      })
   }
 
   loadEventsOnCalendar(actualService) {
@@ -167,13 +159,11 @@ export class ServiceDetailsPage implements OnInit, OnDestroy {
       if(parseEvent.category !== "REJEITADO"){
         event.push(parseEvent);
       }
-
       return event;
     });
 
     this.eventSource = event;
-  }
-  
+  }  
 
   calendarBack() {
     this.myCal.slidePrev();
@@ -194,24 +184,10 @@ export class ServiceDetailsPage implements OnInit, OnDestroy {
 
   onEventSelected(event) {
     this.reservationId = event.id;
-    console.log(
-      'Event selected:' +
-      event.startTime.toLocaleString() +
-      ' - ' +
-      event.endTime.toLocaleString()  +
-      ', ' +
-      event.title +
-      ' - id: ' +
-      event.id
-    );
   }
 
   getReservationId(){
     return this.reservationId;
-  }
-
-  changeMode(mode) {
-    this.calendar.mode = mode;
   }
 
   today() {
@@ -246,27 +222,20 @@ export class ServiceDetailsPage implements OnInit, OnDestroy {
         }
       }
     });
-
-    console.log(
-      'Selected time: ' +
-      ev.selectedTime.toLocaleString() 
-    );
-
-    console.log(ev.events);
   }
 
   onCurrentDateChanged(event: Date) {
     var today = new Date();
     today.setHours(0, 0, 0, 0);
     event.setHours(0, 0, 0, 0);
-    this.isToday = today.getTime() === event.getTime();
-  }
 
-
-  onRangeChanged(ev) {
-    console.log(
-      'range changed: startTime: ' + ev.startTime + ', endTime: ' + ev.endTime
-    );
+    Promise.resolve().then(()=>{
+      if( today.getTime() === event.getTime()){
+        this.isToday = true;
+      }else{
+        this.isToday = false;
+      }
+    })
   }
 
   markDisabled = (date: Date) => {
@@ -284,36 +253,10 @@ export class ServiceDetailsPage implements OnInit, OnDestroy {
     );
   };
 
-  setDaysOpen() {
-    return this.actualService['availableDays'].forEach(el => {
-      switch (el) {
-        case "SUNDAY":
-          this.diasOpen.push(0);
-          break;
-        case "MONDAY":
-          this.diasOpen.push(1);
-          break;
-        case "TUESDAY":
-          this.diasOpen.push(2);
-          break;
-        case "WEDNESDAY":
-          this.diasOpen.push(3);
-          break;
-        case "THURSDAY":
-          this.diasOpen.push(4);
-          break;
-        case "FRIDAY":
-          this.diasOpen.push(5);
-          break;
-        case "SATURDAY":
-          this.diasOpen.push(6);
-          break;
-      }
-      this.today();
-    });
-
+  setDaysOpen(arr:any) {
+    this.convertDays.convertDaysOfDatabaseToIndex(arr, this.diasOpen);
+    this.today();
   }
-
 
   availableHours(data) {
     let horarioInicio = data.startTime.slice(0, 5);

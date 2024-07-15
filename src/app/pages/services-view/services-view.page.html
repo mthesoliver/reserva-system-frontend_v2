@@ -4,7 +4,8 @@
 
 <ion-content [fullscreen]="true">
   <section class="container">
-    <app-owner-info></app-owner-info>
+
+    <h1 class="ion-padding-top bg-title">{{bgTitle}}</h1>
 
     <app-create-service *ngIf="!existentService"></app-create-service>
 
@@ -55,7 +56,7 @@
           </ion-row>
 
           <ion-row class="ion-padding-top">
-            <ion-button type="submit" (click)="onSubmit()" [disabled]="!serviceUpdateForm.valid">Atualizar
+            <ion-button type="submit" (click)="onSubmit()">Atualizar
               serviço</ion-button>
             <ion-button type="submit" color="danger" fill="outline" id="open-modal">Remover serviço</ion-button>
           </ion-row>
@@ -76,11 +77,17 @@
             </ion-buttons>
           </ion-nav>
         </ion-toolbar>
-        <calendar class="services-calendar" [eventSource]="eventSource" [calendarMode]="calendar.mode"
-          [currentDate]="calendar.currentDate" [markDisabled]="markDisabled" [timeInterval]="30" [endHour]="setEndHour"
-          [startHour]="setStartHour" noEventsLabel="s" (onCurrentDateChanged)="onCurrentDateChanged($event)"
-          allDayLabel="" (onEventSelected)="onEventSelected($event)" (onTitleChanged)="onViewTitleChanged($event)"
-          (onTimeSelected)="onTimeSelected($event)" [step]="calendar.step">
+        <calendar class="services-calendar" 
+          [calendarMode]="calendar.mode"
+          [currentDate]="calendar.currentDate"
+          [markDisabled]="markDisabled"
+          [timeInterval]="30"
+          [endHour]="setEndHour"
+          [startHour]="setStartHour" 
+          noEventsLabel=""
+          allDayLabel="" 
+          (onTitleChanged)="onViewTitleChanged($event)"
+          [step]="calendar.step">
         </calendar>
       </ion-col>
 
@@ -106,7 +113,7 @@
             <ion-icon slot="end" name="close" size="large" (click)="onWillDismiss()"></ion-icon>
         </ion-toolbar>
 
-          <ion-title class="ion-text-center" color="danger">Confirme que deseja excluir o serviço</ion-title>
+          <h2 class="ion-text-center">Confirme que deseja excluir o serviço</h2>
 
           <section class="ion-text-center">
             <p>Removendo o serviço:</p>

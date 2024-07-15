@@ -1,5 +1,5 @@
 <ion-toolbar *ngIf="showToolBar">
-  <ion-button (click)="openFilterOptions($event.target)">Adicionar filtros</ion-button>
+  <ion-button (click)="openFilterOptions()">Adicionar filtros</ion-button>
   <ion-chip [outline]="true" *ngFor="let el of filterChips">
     {{el.value}}
     <ion-icon name="close-circle" (click)="closeChip(el.value)"></ion-icon>
@@ -59,7 +59,7 @@
 </ion-buttons>
 
 
-<ion-modal>
+<ion-modal id="reservation-info">
   <ng-template>
     <div class=" modal-content">
       <ion-toolbar class="modal-toolbar">
@@ -83,7 +83,6 @@
 
       <section>
         <ion-title color="primary">Selecione os parâmetros do filtro:</ion-title>
-        
         <div>
           <ion-select label="Selecione o status" okText="Confirmar" cancelText="Cancelar" fill="outline" #selectStatus name="situacao">
             <ion-select-option value="AGUARDANDO_APROVACAO">AGUARDANDO</ion-select-option>
@@ -110,6 +109,7 @@
           <ion-button fill="solid" color="primary" (click)="filterBy(selectStatus, selectService, selectTime)">Confirmar</ion-button>
         </ion-buttons>
       </section>
+
     </div>
   </ng-template>
 </ion-modal>

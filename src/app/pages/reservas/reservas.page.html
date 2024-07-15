@@ -6,14 +6,14 @@
   <section class="container">
     <app-owner-info></app-owner-info>
 
-    <ion-grid>
-      <ion-row class="media-container ion-align-items-start">
+    <ion-grid class="media-container">
+      <ion-row class="ion-align-items-start">
         <ion-col>
           <h1>Todas as reservas</h1>
         </ion-col>
         <ion-col>
           <ion-item>
-            <p slot="end" style="color:#858585">Total de reservas ({{totalReservas}})</p>
+            <p slot={{totalReservasPosition}} style="color:#858585">Total de reservas ({{totalReservas}})</p>
           </ion-item>
         </ion-col>
 

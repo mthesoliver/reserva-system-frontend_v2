@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { SharedModule } from 'src/app/modules/common-module/shared';
 import { HttpModuleModule } from 'src/app/modules/http-module/http-module.module';
 
@@ -11,11 +11,17 @@ import { HttpModuleModule } from 'src/app/modules/http-module/http-module.module
   imports: [SharedModule,HttpModuleModule],
 })
 export class AuthorizedComponent  implements OnInit {
-  code! :string;
 
-  constructor(private activatedRoute: ActivatedRoute, private router: Router) { }
+  constructor( private router: Router) { }
 
   ngOnInit():void {
+    setTimeout(()=>{
+      if(localStorage.getItem('role') === "ADMIN"){
+        this.router.navigate(['/admin/dashboard']);
+      }else{
+        this.router.navigate(['home'])
+      }
+    },200)
   }
 
 }

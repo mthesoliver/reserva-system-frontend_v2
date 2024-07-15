@@ -20,6 +20,11 @@ export class UsersService {
 
   getUserById(id:any):Observable<any>{
     return this.http.get<any>(`/resource/users/${id}`).pipe(first());
+  
+  }
+  
+  getUserByIdMock(id:any):Observable<any>{
+    return this.http.get<any>(`http://192.168.0.227:8081/resource/users/${id}`).pipe(first());
   }
 
   updateUser(updatedUser):Observable<any>{

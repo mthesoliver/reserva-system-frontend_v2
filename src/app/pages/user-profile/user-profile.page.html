@@ -2,15 +2,13 @@
 </ion-toolbar>
 
 <ion-content [fullscreen]="true">
-  <section class="container">
-    <app-owner-info></app-owner-info>
-
+  <section class="container  media-container">
     <ion-row
       class="form-container ion-align-items-center bg-color border-radius-md ion-padding ion-justify-content-center">
       <h1 class="ion-text-center">Informações da conta</h1>
 
       <div class="profile-img-container">
-        <img class="profile-img" src="{{profileImg}}" alt="" srcset="">
+        <img class="profile-img" src="{{profileImg}}" alt="Imagem de perfil" srcset="">
         <div class="edit-img" id="changeImage">
           <ion-icon name="image" size="large" color="white"></ion-icon>
           <span>Alterar imagem</span>
@@ -34,7 +32,7 @@
             <ion-icon name="warning" size="large" slot="end"></ion-icon>
           </ion-input>
 
-          <ion-grid>
+          <ion-grid class="btn-row">
             <ion-row class="btn-grid">
               <ion-col>
                 <ion-button type="submit" fill="outline" expand="block"

@@ -5,7 +5,8 @@ import { CalendarComponent, CalendarMode, NgCalendarModule, Step } from 'ionic2-
 import { Subscription } from 'rxjs';
 import { ServiceUpdate } from 'src/app/model/serviceUpdate';
 import { SharedModule } from 'src/app/modules/common-module/shared';
-import { ResourceService } from 'src/app/services/resource.service';
+import { ConvertDaysService } from 'src/app/services/convert-days.service';
+import { CriptoService } from 'src/app/services/cripto.service';
 import { ServicesService } from 'src/app/services/services.service';
 
 @Component({
@@ -43,28 +44,7 @@ export class CreateServiceComponent  implements OnInit, OnDestroy {
     dateFormatter: {
       formatMonthViewDay: function (date: Date) {
         return date.getDate().toString();
-      },
-      formatMonthViewDayHeader: function (date: Date) {
-        return 'MonMH';
-      },
-      formatMonthViewTitle: function (date: Date) {
-        return 'testMT';
-      },
-      formatWeekViewDayHeader: function (date: Date) {
-        return 'MonWH';
-      },
-      formatWeekViewTitle: function (date: Date) {
-        return 'testWT';
-      },
-      formatWeekViewHourColumn: function (date: Date) {
-        return 'testWH';
-      },
-      formatDayViewHourColumn: function (date: Date) {
-        return 'testDH';
-      },
-      formatDayViewTitle: function (date: Date) {
-        return 'testDT';
-      },
+      }
     },
   };
 
@@ -81,21 +61,16 @@ export class CreateServiceComponent  implements OnInit, OnDestroy {
   });
 
 
-  constructor(private resourceService: ResourceService, private fb: FormBuilder, private serviceServices: ServicesService, private router:Router) { }
+  constructor(private fb: FormBuilder, private serviceServices: ServicesService, private router:Router, private convertDays:ConvertDaysService, private criptoService:CriptoService) { }
 
   ngOnInit() {
     this.newService.diasDisponiveis =[];
-    this.setDaysOpen() 
-    this.availableHours(this.newService) 
-
-    this.subService = this.resourceService.currentUser().subscribe(
-      data => {
-        this.newService.userId = data.id;
-      })
+    this.setDaysOpen();
+    this.newService.userId = parseInt(this.criptoService.getEncryptItem('userIdentification'));
   }
 
   ngOnDestroy(): void {
-    this.subService.unsubscribe();
+    this.newService = new ServiceUpdate;
   }
 
   calendarBack() {
@@ -110,55 +85,14 @@ export class CreateServiceComponent  implements OnInit, OnDestroy {
     this.viewTitle = title;
   }
 
-  onEventSelected(event) {
-    console.log(
-      'Event selected:' +
-      event.startTime +
-      '-' +
-      event.endTime +
-      ',' +
-      event.title
-    );
-  }
-
-  changeMode(mode) {
-    this.calendar.mode = mode;
-  }
-
   today() {
     this.calendar.currentDate = new Date();
-  }
-
-  onTimeSelected(ev) {
-    console.log(
-      'Selected time: ' +
-      ev.selectedTime +
-      ', hasEvents: ' +
-      (ev.events !== undefined && ev.events.length !== 0) +
-      ', disabled: ' +
-      ev.disabled
-    );
-  }
-
-  onCurrentDateChanged(event: Date) {
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
-    event.setHours(0, 0, 0, 0);
-    this.isToday = today.getTime() === event.getTime();
-  }
-
-
-  onRangeChanged(ev) {
-    console.log(
-      'range changed: startTime: ' + ev.startTime + ', endTime: ' + ev.endTime
-    );
   }
 
   markDisabled = (date: Date) => {
     var current = new Date();
     current.setHours(0, 0, 0);
     return (
-      // date < current ||
       (date.getDay() !== this.insertDiasOpen[0] &&
         date.getDay() !== this.insertDiasOpen[1] &&
         date.getDay() !== this.insertDiasOpen[2] &&
@@ -171,43 +105,11 @@ export class CreateServiceComponent  implements OnInit, OnDestroy {
 
   setDaysOpen() {
     let checkbox = document.querySelectorAll('ion-checkbox')
-    
-    if(this.newService.diasDisponiveis.length <=0 ){
-      return this.newService.diasDisponiveis.forEach(el => {
-        switch (el) {
-          case "SUNDAY":
-            this.insertDiasOpen.push(0);
-            checkbox[0].checked = true;
-            break;
-          case "MONDAY":
-            this.insertDiasOpen.push(1);
-            checkbox[1].checked = true;
-            break;
-          case "TUESDAY":
-            this.insertDiasOpen.push(2);
-            checkbox[2].checked = true;
-            break;
-          case "WEDNESDAY":
-            this.insertDiasOpen.push(3);
-            checkbox[3].checked = true;
-            break;
-          case "THURSDAY":
-            this.insertDiasOpen.push(4);
-            checkbox[4].checked = true;
-            break;
-          case "FRIDAY":
-            this.insertDiasOpen.push(5);
-            checkbox[5].checked = true;
-            break;
-          case "SATURDAY":
-            this.insertDiasOpen.push(6);
-            checkbox[6].checked = true;
-            break;
-        }
-        this.today();
-      })
+      if(this.newService.diasDisponiveis.length <=0 ){
+      this.convertDays.convertDaysOfDatabaseToIndex(this.newService.diasDisponiveis, this.insertDiasOpen, checkbox);
+      this.today()
     }else{
-      return "..."
+      null
     }
   }
 
@@ -228,52 +130,13 @@ export class CreateServiceComponent  implements OnInit, OnDestroy {
 
   onSubmit() {
     let diasDisponiveis = [];
-    this.insertDiasOpen.forEach(el => {
-      switch (el) {
-        case 0:
-          diasDisponiveis.push("SUNDAY");
-          break;
-        case 1:
-          diasDisponiveis.push("MONDAY");
-          break;
-        case 2:
-          diasDisponiveis.push("TUESDAY");
-          break;
-        case 3:
-          diasDisponiveis.push("WEDNESDAY");
-          break;
-        case 4:
-          diasDisponiveis.push("THURSDAY");
-          break;
-        case 5:
-          diasDisponiveis.push("FRIDAY");
-          break;
-        case 6:
-          diasDisponiveis.push("SATURDAY");
-          break;
-      }
-    })
+    this.convertDays.convertDaysOfIndexToDatabase(diasDisponiveis, this.insertDiasOpen);
     this.newService.horarioInicio = this.serviceUpdateForm.value.startTime + ':00';
     this.newService.horarioFinal = this.serviceUpdateForm.value.endTime + ':00';
     this.newService.diasDisponiveis = diasDisponiveis;
 
     this.serviceServices.insertNewService(this.newService).subscribe();
     this.router.navigate(['admin/dashboard'])
-  }
-
-  availableHours(data) {
-    let horarioInicio = data.horarioInicio;
-    let horarioFinal = data.horarioFinal;
-
-    for (let i = parseInt(horarioInicio); i < parseInt(horarioFinal); i++) {
-      if(i<10){
-      this.horariosDisponiveis.push('0' + i + ':00h');
-      this.horariosDisponiveis.push('0' + i + ':30h');
-      }else{
-        this.horariosDisponiveis.push(i + ':00h');
-        this.horariosDisponiveis.push(i + ':30h');
-      }
-    }
   }
 
 }

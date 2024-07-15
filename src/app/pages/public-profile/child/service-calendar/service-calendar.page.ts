@@ -1,7 +1,6 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { MaskitoDirective } from '@maskito/angular';
 import { MaskitoElementPredicate, MaskitoOptions } from '@maskito/core';
 import { NgCalendarModule, CalendarComponent, CalendarMode, Step } from 'ionic2-calendar';
@@ -14,6 +13,8 @@ import { CriptoService } from 'src/app/services/cripto.service';
 import { ReservationsService } from 'src/app/services/reservations.service';
 import { ServicesService } from 'src/app/services/services.service';
 import { UsersService } from 'src/app/services/users.service';
+import { LoadingController } from '@ionic/angular';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export interface IEvent {
   id:number;
@@ -86,27 +87,6 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
       formatMonthViewDay: function (date: Date) {
         return date.getDate().toString();
       },
-      formatMonthViewDayHeader: function (date: Date) {
-        return 'MonMH';
-      },
-      formatMonthViewTitle: function (date: Date) {
-        return 'testMT';
-      },
-      formatWeekViewDayHeader: function (date: Date) {
-        return 'MonWH';
-      },
-      formatWeekViewTitle: function (date: Date) {
-        return 'testWT';
-      },
-      formatWeekViewHourColumn: function (date: Date) {
-        return 'testWH';
-      },
-      formatDayViewHourColumn: function (date: Date) {
-        return 'testDH';
-      },
-      formatDayViewTitle: function (date: Date) {
-        return 'testDT';
-      },
     },
   };
 
@@ -136,7 +116,7 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
   backToOwner:string;
   usersList: any[] = [];
 
-  constructor(private criptoService:CriptoService, private activatedRoute:ActivatedRoute, private fb: FormBuilder, private userService:UsersService, private servicesService:ServicesService, private reservationService:ReservationsService, private router:Router) { }
+  constructor(private criptoService:CriptoService, private activatedRoute:ActivatedRoute, private fb: FormBuilder, private userService:UsersService, private servicesService:ServicesService, private reservationService:ReservationsService, private loadingCtrl: LoadingController) { }
 
   ngOnInit() {
     this.serviceId = this.activatedRoute.snapshot.paramMap.get('serviceId');
@@ -160,7 +140,7 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
     localStorage.removeItem('reservas');
   }
 
-  emailExists(control:FormControl){
+  emailExists(){
     const email = this.newReservationForm.get('email').value;
     const emailExists = this.usersList.some(user => user.email === email);
 
@@ -179,21 +159,6 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
     this.viewTitle = title;
   }
 
-  onEventSelected(event) {
-    console.log(
-      'Event selected:' +
-      event.startTime +
-      '-' +
-      event.endTime +
-      ',' +
-      event.title
-    );
-  }
-
-  changeMode(mode) {
-    this.calendar.mode = mode;
-  }
-
   today() {
     this.calendar.currentDate = new Date();
   }
@@ -207,15 +172,6 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
 
     this.newReservation.date = timeInfos[0];
     this.newReservation.day = this.convertDays(timeInfos[1]).toString();
-
-    console.log(
-      'Selected time: ' +
-      ev.selectedTime +
-      ', hasEvents: ' +
-      (ev.events !== undefined && ev.events.length !== 0) +
-      ', disabled: ' +
-      ev.disabled
-    );
     
     this.checkReservation()
     
@@ -245,13 +201,6 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
         }
       }
     });
-
-    console.log(
-      'Selected time: ' +
-      ev.selectedTime.toLocaleString() 
-    );
-
-    console.log(ev.events);
   }
 
   onCurrentDateChanged(event: Date) {
@@ -259,13 +208,6 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
     today.setHours(0, 0, 0, 0);
     event.setHours(0, 0, 0, 0);
     this.isToday = today.getTime() === event.getTime();
-  }
-
-
-  onRangeChanged(ev) {
-    console.log(
-      'range changed: startTime: ' + ev.startTime + ', endTime: ' + ev.endTime
-    );
   }
 
   markDisabled = (date: Date) => {
@@ -351,7 +293,7 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
         this.setDaysOpen()
         this.availableHours(this.selectedService);
         this.serviceName = this.selectedService.serviceName;
-        this.criptoService.setItemToLocalStorage(JSON.stringify( data[0].reservations), 'reservas');
+        this.criptoService.setItemToLocalStorage(JSON.stringify(data[0].reservations), 'reservas');
         this.reservationsData = JSON.parse(this.criptoService.getEncryptItem('reservas'));
         this.loadEventsOnCalendar();
 
@@ -465,16 +407,22 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
 
   setEndTime(startTime){
     let timeToint = parseFloat(startTime.replace(":","."));
-    let verify;
+    let verifyStart;
 
     if(timeToint + 1 <10){
-      verify = '0'+ (timeToint + 1).toFixed(2).replace('.', ':')+"h" ;
+      verifyStart = '0'+ (timeToint + 1).toFixed(2).replace('.', ':')+"h" ;
     }else{
-      verify = (timeToint + 1).toFixed(2).replace('.', ':')+"h" ;
+      verifyStart = (timeToint + 1).toFixed(2).replace('.', ':')+"h" ;
     }
     
-    if(this.horariosDisponiveis.includes(verify)){
-      let endTime = (timeToint + 1).toFixed(2).replace('.', ':') + ":00";
+    if(this.horariosDisponiveis.includes(verifyStart)){
+      let endTime;
+      
+      if(timeToint + 1 <10){
+        endTime = '0' + (timeToint + 1).toFixed(2).replace('.', ':') + ":00";
+      }else{
+        endTime = (timeToint + 1).toFixed(2).replace('.', ':') + ":00";
+      }
 
       return endTime;
     } else{
@@ -537,7 +485,12 @@ export class ServiceCalendarPage implements OnInit , OnDestroy {
     }else this.newReservation.additionalInfo = this.comment.value;
     
     this.reservationService.insertNewReservation(this.serviceId, this.newReservation).subscribe(()=>{
-    this.isReservationSend = true;
-    });
+      this.loadingCtrl.dismiss()
+      this.isReservationSend = true;
+      }, (error:HttpErrorResponse)=>{
+        this.loadingCtrl.dismiss()
+        alert('Error: ' + error.status);
+        location.reload()
+      });
   }
 }

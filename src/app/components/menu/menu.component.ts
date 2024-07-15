@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
@@ -6,7 +6,8 @@ import { SharedModule } from 'src/app/modules/common-module/shared';
 import { LoginComponent } from '../login/login.component';
 import { MenuVisibilityService } from 'src/app/services/menu-visibility.service';
 import { ResourceService } from 'src/app/services/resource.service';
-import { HttpClient, HttpClientModule} from '@angular/common/http';
+import { HttpClientModule} from '@angular/common/http';
+import { CriptoService } from 'src/app/services/cripto.service';
 
 @Component({
   selector: 'app-menu',
@@ -24,27 +25,46 @@ import { HttpClient, HttpClientModule} from '@angular/common/http';
 export class MenuComponent implements OnInit {
 
   logout_uri = environment.logout_url;
-  isLogged: boolean;
-  isAdmin: boolean;
+  isLogged:boolean;
+  isAdmin:boolean;
+  isMobile:boolean;
 
   menuVisibility:boolean;
+  @Input()
+  avatar:string='';
 
-  constructor(private router: Router, private login:LoginComponent, private menuVisibilityService: MenuVisibilityService, private resourceService:ResourceService, private http: HttpClient) { }
-
+  constructor(private criptoService:CriptoService, private router: Router, private menuVisibilityService: MenuVisibilityService, private resourceService:ResourceService) { }
+  
   ngOnInit(): void {
-
     this.menuVisibilityService.menuVisibility$.subscribe(visibility => {
       this.menuVisibility = visibility;
     });
     this.getLogged();
-    this.getAdmin();
+
+    if(this.avatar=''){
+      this.avatar = this.criptoService.getEncryptItem('userProfilePicture');
+    }
+    this.verifyIsMobile()
+  }
+
+  verifyIsMobile(){
+    if(window.innerWidth <= 768){
+      this.isMobile=true
+    }else{
+      this.isMobile=false
+    }
+    window.addEventListener("resize", ()=>{
+      if(window.innerWidth <= 768){
+        this.isMobile=true
+      }else{
+        this.isMobile=false
+      }
+    });
   }
 
   onLogout(){
     this.resourceService.clearUserRoleToStorage();
-    this.resourceService.clearServiceIdToStorage();
-    localStorage.removeItem('reservas');
-    localStorage.removeItem('horas');
+    localStorage.clear();
     window.location.href = 'http://127.0.0.1:9000/logout';
   }
 
@@ -56,18 +76,20 @@ export class MenuComponent implements OnInit {
     this.resourceService.logged().subscribe(data =>{
       if(data.message != null){
         this.isLogged=true;
+        this.getAdmin(data);
+      }else{
+        console.log("Não logado");
       }
-    },
-    err=>{
-      console.error(err);
-    })
+    });
   }
 
-  getAdmin(){
-    this.resourceService.logged().subscribe(data =>{
+  getAdmin(data:any){
       if(data.message.includes('ADMIN') || data.message.includes('OIDC_USER')){
         this.isAdmin=true;
       }
-    })
+  }
+
+  goToPersonalInfo(){
+    this.router.navigate(['admin/user-profile'])
   }
 }

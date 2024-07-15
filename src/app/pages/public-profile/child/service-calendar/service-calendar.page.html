@@ -2,144 +2,146 @@
 </ion-toolbar>
 
 <ion-content [fullscreen]="true">
-<section class="container" *ngIf="!isReservationSend">
-  <app-owner-info
-  [currentUserInfoEmail]="currentUserInfoEmail"
-  [currentUserInfoName]="currentUserInfoName"
-  [currentUserInfoPhone]="currentUserInfoPhone"
-  [profileImg]="profileImg"
-  ></app-owner-info>
+  <section class="container" *ngIf="!isReservationSend">
+    <app-owner-info [currentUserInfoEmail]="currentUserInfoEmail" [currentUserInfoName]="currentUserInfoName"
+      [currentUserInfoPhone]="currentUserInfoPhone" [profileImg]="profileImg"></app-owner-info>
 
-  <ion-row class="services-calendar-container" id="service-row">
+    <ion-row class="services-calendar-container" id="service-row">
 
-    <ion-col size-lg="4" size-md="3.5" size="auto" class="form-col" *ngIf="!isNext" [ngClass]="{animation:true}">
-      <ion-title color="primary">Informações da reserva</ion-title>
-      <ion-row>
-        <h2 class="ion-padding-top">{{serviceName}}</h2>
-      </ion-row>
-      <ion-row>
-        <ion-list>
-        <p class="reservation-preview">Dia: <strong>{{newReservation.day}}</strong></p>
-        <p class="reservation-preview">Data: <strong>{{newReservation.date}}</strong></p>
-        <p class="reservation-preview">Das: <strong>{{newReservation.startTime}}</strong></p>
-        <p class="reservation-preview">Até as: <strong>{{newReservation.endTime}}</strong></p>
-        </ion-list>
-      </ion-row>
-    </ion-col>
-
-    <ion-col size-lg="5" size-md="5" size="auto" class="calendar-col" [ngClass]="triggerClass()">
-      <ion-toolbar>
-        <ion-nav>
-          <ion-title style="text-transform: capitalize;" color="primary" class="ion-text-center">{{viewTitle}}</ion-title>
-          <ion-buttons class="ion-justify-content-between">
-            <ion-button (click)="calendarBack()"><ion-icon name="chevron-back-outline"></ion-icon>Anterior</ion-button>
-            <ion-button [disabled]="isToday" (click)="today()">Hoje</ion-button>
-            <ion-button (click)="calendarForward()">Próximo<ion-icon name="chevron-forward-outline"></ion-icon></ion-button>
-          </ion-buttons>
-        </ion-nav>
-      </ion-toolbar>
-      <calendar class="services-calendar-details" 
-      [eventSource]="eventSource" 
-      [calendarMode]="calendar.mode"
-        [currentDate]="calendar.currentDate" 
-        [markDisabled]="markDisabled" [timeInterval]="30" 
-        [endHour]="setEndHour"
-        [startHour]="setStartHour" 
-        noEventsLabel="Sem reservas para esta data"
-        (onCurrentDateChanged)="onCurrentDateChanged($event)" 
-        allDayLabel=""
-        (onEventSelected)="onEventSelected($event)"
-        (onTitleChanged)="onViewTitleChanged($event)"
-        (onTimeSelected)="onTimeSelected($event)" 
-        [step]="calendar.step">
-      </calendar>
-    </ion-col>
-
-    <ion-col size-lg="3" size-md="3.5" size="auto" class="time-col" *ngIf="!isNext" [ngClass]="{animation:true}" >
-      <ion-title color="primary">Horários disponíveis</ion-title>
-      <ion-segment>
-        <ion-list style="display: flex; flex-direction: column;"  #timeButtons>
-          <ion-button 
-          (click)="selectHour($event)"
-          fill="outline" *ngFor="let horas of horariosDisponiveis" class="hours-item">{{horas}}
-        </ion-button>
-        </ion-list>
-      </ion-segment>
-    </ion-col>
-
-    <ion-col size-lg="6" size-md="6" size="auto" class="form-col ion-padding-start ion-margin-start" *ngIf="isNext" [ngClass]="triggerForm()">
-      <ion-title color="primary">Confirmação da reserva</ion-title>
-      <ion-row>
-        <h2 class="ion-padding-top">{{serviceName}}</h2>
-      </ion-row>
-      <ion-row>
-        <ion-col>
+      <ion-col size-lg="4" size-md="3.5" size="auto" class="form-col" *ngIf="!isNext" [ngClass]="{animation:true}">
+        <ion-title color="primary">Informações da reserva</ion-title>
+        <ion-row>
+          <h2 class="ion-padding-top">{{serviceName}}</h2>
+        </ion-row>
+        <ion-row>
           <ion-list>
             <p class="reservation-preview">Dia: <strong>{{newReservation.day}}</strong></p>
             <p class="reservation-preview">Data: <strong>{{newReservation.date}}</strong></p>
-            </ion-list>
-        </ion-col>
-        <ion-col>
-          <ion-list>
             <p class="reservation-preview">Das: <strong>{{newReservation.startTime}}</strong></p>
             <p class="reservation-preview">Até as: <strong>{{newReservation.endTime}}</strong></p>
-            </ion-list>
-        </ion-col>
-
-        <form [formGroup]="newReservationForm" novalidate method="POST" class="reservation-form">
-          <ion-row>
-          <span class="input-title">Seu nome:</span>
-          <ion-input fill="outline" type="text" placeholder="Digite seu nome" formControlName="nome" [(ngModel)]="reservationUser.name" clear-input="true" autocomplete="name" size="sm">
-            <span *ngIf="newReservationForm.controls.nome.hasError('required')" slot="end" class="error-log">Nome é obrigatório</span>
-          </ion-input>
-
-          <span class="input-title">Seu telefone:</span>
-          <ion-input fill="outline" type="tel" placeholder="Digite seu telefone" formControlName="phone" [(ngModel)]="reservationUser.phone"  [maskito]="phoneMask"
-          [maskitoElement]="maskPredicate" clear-input="true" autocomplete="tel-national">
-          <span *ngIf="newReservationForm.controls.phone.hasError('required')" slot="end" class="error-log">Telefone é obrigatório</span>
-        </ion-input>
-
-          <span class="input-title">Seu melhor email:</span>
-          <ion-input fill="outline" type="email" placeholder="Digite seu melhor email" formControlName="email" [(ngModel)]="reservationUser.email"  clear-input="true" autocomplete="email">
-            <span *ngIf="newReservationForm.controls.email.hasError('required')" slot="end" class="error-log">Email é obrigatório</span>
-            <span *ngIf="newReservationForm.controls.email.hasError('email')" slot="end" class="error-log">Digite um email válido</span>
-            <span *ngIf="newReservationForm.controls.email.hasError('emailAlreadyExists')" slot="end" class="error-log">Email já registrado</span></ion-input>
-
-            <span class="input-title">Quer deixar alguma informação adicional?</span>
-            <ion-textarea label="Opcional" labelPlacement="stacked" [autoGrow]="true" fill="outline" placeholder="Em poucas palavras escreva alguma informação adicional" [counter]="true"
-            maxlength="120" [counterFormatter]="customCounterFormatter" #comment></ion-textarea>
-            
-            <p class="ion-padding-top notification">*Todas as reservas estão sujeitas à aprovação. O Status da sua reserva será notificado no e-mail fornecido</p>
+          </ion-list>
         </ion-row>
-        </form>
-      
+      </ion-col>
+
+      <ion-col size-lg="5" size-md="5" size="auto" class="calendar-col" [ngClass]="triggerClass()">
+        <ion-toolbar>
+          <ion-nav>
+            <ion-title style="text-transform: capitalize;" color="primary"
+              class="ion-text-center">{{viewTitle}}</ion-title>
+            <ion-buttons class="ion-justify-content-between">
+              <ion-button (click)="calendarBack()"><ion-icon
+                  name="chevron-back-outline"></ion-icon>Anterior</ion-button>
+              <ion-button [disabled]="isToday" (click)="today()">Hoje</ion-button>
+              <ion-button (click)="calendarForward()">Próximo<ion-icon
+                  name="chevron-forward-outline"></ion-icon></ion-button>
+            </ion-buttons>
+          </ion-nav>
+        </ion-toolbar>
+        <calendar class="services-calendar-details" [eventSource]="eventSource" [calendarMode]="calendar.mode"
+          [currentDate]="calendar.currentDate" [markDisabled]="markDisabled" [timeInterval]="30" [endHour]="setEndHour"
+          [startHour]="setStartHour" noEventsLabel="Sem reservas para esta data"
+          (onCurrentDateChanged)="onCurrentDateChanged($event)" allDayLabel=""
+          (onTitleChanged)="onViewTitleChanged($event)" (onTimeSelected)="onTimeSelected($event)"
+          [step]="calendar.step">
+        </calendar>
+      </ion-col>
+
+      <ion-col size-lg="3" size-md="3.5" size="auto" class="time-col" *ngIf="!isNext" [ngClass]="{animation:true}">
+        <ion-title color="primary">Horários disponíveis</ion-title>
+        <ion-segment>
+          <ion-list style="display: flex; flex-direction: column;" #timeButtons>
+            <ion-button (click)="selectHour($event)" fill="outline" *ngFor="let horas of horariosDisponiveis"
+              class="hours-item">{{horas}}
+            </ion-button>
+          </ion-list>
+        </ion-segment>
+      </ion-col>
+
+      <ion-col size-lg="6" size-md="6" size="auto" class="form-col ion-padding-start ion-margin-start" *ngIf="isNext"
+        [ngClass]="triggerForm()">
+        <ion-title color="primary">Confirmação da reserva</ion-title>
+        <ion-row>
+          <h2 class="ion-padding-top">{{serviceName}}</h2>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-list>
+              <p class="reservation-preview">Dia: <strong>{{newReservation.day}}</strong></p>
+              <p class="reservation-preview">Data: <strong>{{newReservation.date}}</strong></p>
+            </ion-list>
+          </ion-col>
+          <ion-col>
+            <ion-list>
+              <p class="reservation-preview">Das: <strong>{{newReservation.startTime}}</strong></p>
+              <p class="reservation-preview">Até as: <strong>{{newReservation.endTime}}</strong></p>
+            </ion-list>
+          </ion-col>
+
+          <form [formGroup]="newReservationForm" novalidate method="POST" class="reservation-form">
+            <ion-row>
+              <span class="input-title title-label">Seu nome:</span>
+              <ion-input fill="outline" type="text" placeholder="Digite seu nome" formControlName="nome"
+                [(ngModel)]="reservationUser.name" clear-input="true" autocomplete="name" size="sm">
+                <span *ngIf="newReservationForm.controls.nome.hasError('required')" slot="end" class="error-log">Nome é
+                  obrigatório</span>
+              </ion-input>
+
+              <span class="input-title title-label">Seu telefone:</span>
+              <ion-input fill="outline" type="tel" placeholder="Digite seu telefone" formControlName="phone"
+                [(ngModel)]="reservationUser.phone" [maskito]="phoneMask" [maskitoElement]="maskPredicate"
+                clear-input="true" autocomplete="tel-national">
+                <span *ngIf="newReservationForm.controls.phone.hasError('required')" slot="end"
+                  class="error-log">Telefone é obrigatório</span>
+              </ion-input>
+
+              <span class="input-title title-label">Seu melhor email:</span>
+              <ion-input fill="outline" type="email" placeholder="Digite seu melhor email" formControlName="email"
+                [(ngModel)]="reservationUser.email" clear-input="true" autocomplete="email">
+                <span *ngIf="newReservationForm.controls.email.hasError('required')" slot="end" class="error-log">Email
+                  é obrigatório</span>
+                <span *ngIf="newReservationForm.controls.email.hasError('email')" slot="end" class="error-log">Digite um
+                  email válido</span>
+                <span *ngIf="newReservationForm.controls.email.hasError('emailAlreadyExists')" slot="end"
+                  class="error-log">Email já registrado</span></ion-input>
+
+              <span class="input-title">Quer deixar alguma informação adicional?</span>
+              <ion-textarea label="Opcional" labelPlacement="stacked" [autoGrow]="true" fill="outline"
+                placeholder="Em poucas palavras escreva alguma informação adicional" [counter]="true" maxlength="120"
+                [counterFormatter]="customCounterFormatter" #comment></ion-textarea>
+
+              <p class="ion-padding-top notification">*Todas as reservas estão sujeitas à aprovação. O Status da sua
+                reserva será notificado no e-mail fornecido</p>
+            </ion-row>
+          </form>
+
+        </ion-row>
+      </ion-col>
+
+      <ion-row style="width: 100%;" class="ion-padding-top btn-row" *ngIf="isAllChecks">
+        <ion-toolbar>
+          <ion-buttons slot="start" *ngIf="isNext">
+            <ion-button fill="outline" color="secondary" size="large" class="confirm-button toolbar-buttons"  
+              (click)="returnToReservation()"> Voltar</ion-button>
+          </ion-buttons>
+          <ion-buttons slot="end">
+            <ion-button fill="solid" color="secondary" size="large" class="confirm-button toolbar-buttons"
+              (click)="goToConfirm()" *ngIf="!isOpenForm"> Avançar</ion-button>
+            <ion-button id="open-loading" type="submit" fill="solid" color="primary" size="large"
+              class="ion-padding-vertical btn-submit toolbar-buttons" [disabled]="!newReservationForm.valid"
+              (click)="onSubmit()" *ngIf="isOpenForm">Confirmar reserva!</ion-button>
+            <ion-loading trigger="open-loading" message="Enviando solicitação de reserva..." *ngIf="isOpenForm"
+              spinner="bubbles"></ion-loading>
+
+
+          </ion-buttons>
+        </ion-toolbar>
       </ion-row>
-    </ion-col>
 
-    <ion-row style="width: 100%;" class="ion-padding-top" *ngIf="isAllChecks">
-      <ion-toolbar>
-        <ion-buttons slot="start" *ngIf="isNext">
-        <ion-button fill="outline" color="secondary" size="large" class="confirm-button toolbar-buttons" (click)="returnToReservation()"> Voltar</ion-button>
-      </ion-buttons>
-        <ion-buttons slot="end">
-          <ion-button fill="solid" color="secondary" size="large" class="confirm-button toolbar-buttons" (click)="goToConfirm()" *ngIf="!isOpenForm"> Avançar</ion-button>
-          <ion-button type="submit" fill="solid" color="primary" size="large" class="ion-padding-vertical btn-submit toolbar-buttons" [disabled]="!newReservationForm.valid" (click)="onSubmit()" *ngIf="isOpenForm">Confirmar reserva!</ion-button>
-
-        </ion-buttons>
-    </ion-toolbar>
     </ion-row>
-  
-  </ion-row>
 
-</section>
+  </section>
 
-<app-return-page
-[title]="title"
-[content]="content"
-[returnToPage]="backToOwner"
-buttonTittle="Retornar para página anterior"
-*ngIf="isReservationSend"
->
-</app-return-page>
+  <app-return-page [title]="title" [content]="content" [returnToPage]="backToOwner"
+    buttonTittle="Retornar para página anterior" *ngIf="isReservationSend">
+  </app-return-page>
 </ion-content>
-

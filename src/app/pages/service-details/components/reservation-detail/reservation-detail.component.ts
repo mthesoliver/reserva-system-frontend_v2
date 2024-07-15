@@ -3,6 +3,8 @@ import { SharedModule } from 'src/app/modules/common-module/shared';
 import { ReservationsService } from 'src/app/services/reservations.service';
 import { IonModal } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
+import { CriptoService } from 'src/app/services/cripto.service';
+import { ServiceDetailsPage } from '../../service-details.page';
 
 @Component({
   selector: 'app-reservation-detail',
@@ -16,6 +18,7 @@ import { FormsModule } from '@angular/forms';
 })
 
 export class ReservationDetailComponent implements OnInit, OnChanges {
+  detailPage:ServiceDetailsPage
 
   @Input()
   serviceId: number;
@@ -40,7 +43,7 @@ export class ReservationDetailComponent implements OnInit, OnChanges {
   isRejeitado:boolean;
 
 
-  constructor(private reservationService: ReservationsService) { }
+  constructor(private reservationService: ReservationsService, private criptoService:CriptoService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     changes = {
@@ -84,6 +87,8 @@ export class ReservationDetailComponent implements OnInit, OnChanges {
           if(this.reservationInfo.additionalInfo !== null){
             this.addInfoExists = true;
             this.reservationAddInfo = this.reservationInfo.additionalInfo;
+          }else{
+            this.addInfoExists = false
           }
           this.notNull = true;
         }

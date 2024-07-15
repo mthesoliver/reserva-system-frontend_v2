@@ -17,6 +17,9 @@ export class ServicesService {
     return this.httpClient.get<any>(`/resource/services/${id}`)
   }
 
+  getServicesByOwner(id:number):Observable<any>{
+    return this.httpClient.get<any>(`/resource/services/by/${id}/list`);
+  }
   
   getServicesByName(serviceName: any): Observable<any>  {
     return this.httpClient.get<any>(`/resource/services/by/${serviceName}`)

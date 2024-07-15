@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SharedModule } from 'src/app/modules/common-module/shared';
-import { ResourceService } from 'src/app/services/resource.service';
 import {Clipboard} from '@angular/cdk/clipboard';
+import { UsersService } from 'src/app/services/users.service';
+import { CriptoService } from 'src/app/services/cripto.service';
 
 @Component({
   selector: 'app-owner-info',
@@ -21,35 +22,32 @@ export class OwnerInfoComponent  implements OnInit {
   currentUserInfoEmail: string  = ' ';
   @Input()
   currentUserInfoPhone: string  = ' ';
-
-  publicLink:string="";
   @Input()
   profileImg:string = 'https://blog.davidstea.com/en/wp-content/uploads/2018/04/Placeholder.jpg'
 
-  constructor(private resourceService: ResourceService, private router:Router, private clipboard: Clipboard) { 
+  publicLink:string="";
+
+  constructor(private router:Router, private clipboard: Clipboard, private userService:UsersService, private criptoService:CriptoService) { 
     
   }
 
   ngOnInit() {
-    if(this.currentUserInfoEmail && this.currentUserInfoName && this.currentUserInfoPhone === ' '){
-      this.resourceService.currentUser().subscribe(data =>{
+    if((this.currentUserInfoEmail && this.currentUserInfoName && this.currentUserInfoPhone) === ' '){
+      this.userService.getUserById(this.criptoService.getEncryptItem('userIdentification')).subscribe(data=>{
         if(data.role === "ADMIN"){
           this.isAdmin = true;
         }
         this.setUserInfos(data);
-      })
-    }   
-    
+      });
+    }
   }
 
   setUserInfos(data){
     this.currentUserInfoName= data.name;
     this.currentUserInfoEmail= data.email;
     this.currentUserInfoPhone= data.phone;
-    if(data.getProfilePicture.name !== null){
-      this.profileImg = `/resource/pic/db/${data.getProfilePicture.name}`
-    }
     this.publicLink = (location.origin+'/page/'+this.currentUserInfoName);
+    this.profileImg = this.criptoService.getEncryptItem('userProfilePicture');
   }
 
   editInfo(){
@@ -65,7 +63,7 @@ export class OwnerInfoComponent  implements OnInit {
   }
 
   goToPublicPage(){
-    let role = this.resourceService.getUserRoleToStorage();
+    let role = localStorage.getItem('role');
     if(role === "USER" || !role){
       this.router.navigate([`page/${this.currentUserInfoName}`]);
     }else{

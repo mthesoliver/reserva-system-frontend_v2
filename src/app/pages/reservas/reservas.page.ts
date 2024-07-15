@@ -3,12 +3,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SharedModule } from 'src/app/modules/common-module/shared';
 import { OwnerInfoComponent } from '../admin-dashboard/components/owner-info/owner-info.component';
 import { ReservationListComponent } from '../admin-dashboard/components/reservation-list/reservation-list.component';
-import { ResourceService } from 'src/app/services/resource.service';
-import { UsersService } from 'src/app/services/users.service';
-import { Subscription } from 'rxjs';
 import { ViewWillEnter, ViewWillLeave } from '@ionic/angular';
-import { Router } from '@angular/router';
-import { ReservationsService } from 'src/app/services/reservations.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -24,72 +19,61 @@ import { FormsModule } from '@angular/forms';
   ]
 })
 export class ReservasPage implements OnInit, OnDestroy, ViewWillLeave, ViewWillEnter {
-  @ViewChild(ReservationListComponent) reservationList!:ReservationListComponent;
+  @ViewChild(ReservationListComponent) reservationList!: ReservationListComponent;
 
-  currentUserId: number;
-  servicesId: number[] = [];
-  subReservation: Subscription;
-  loaded:boolean;
-  isSearchFill:boolean=false
-  totalReservas:string;
-  searchText:string = '';
+  loaded: boolean;
+  isSearchFill: boolean = false
+  totalReservas: string;
+  searchText: string = '';
+  totalReservasPosition:string = 'end';
 
-  constructor(private resourceService: ResourceService, private userService: UsersService, private router:Router, private reservationService:ReservationsService, private criptoService:CriptoService) { }
-
-  ngOnInit() {
-    this.subReservation = this.loadData()
-    this.searchText
-  }
-
-  ngOnDestroy(): void {
-    this.subReservation.unsubscribe()
-  }
+  constructor(private criptoService: CriptoService) { }
 
   ionViewWillEnter(): void {
-    this.subReservation = this.loadData()
-    if(localStorage.getItem('reservas')){
+    this.loadData();
+    if (localStorage.getItem('reservas')) {
       this.totalReservas = JSON.parse(this.criptoService.getEncryptItem('reservas')).length;
-    }else{
-      this.totalReservas='...';
+    } else {
+      this.totalReservas = '...';
     }
   }
 
   ionViewWillLeave(): void {
-    this.subReservation.unsubscribe()
+    this.loaded = false;
+  }
+
+  ngOnInit() {
+    this.loadData();
+    if(innerWidth <= 768){
+      this.totalReservasPosition = "start"
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.loaded = false;
   }
 
   loadData() {
-    return this.resourceService.currentUser().subscribe(data => {
-      this.currentUserId = data.id;
-      this.loadUserInfo(this.currentUserId);
-    })
+    if (localStorage.getItem('reservas')) {
+      this.loaded = true
+    }else{
+      console.log('Sem reservas ainda :(');
+      this.loaded = false
+    }
   }
 
-  loadUserInfo(id) {
-    this.userService.getUserById(id).subscribe(
-      data => {
-        data.services.forEach(el => {
-          el = {
-            serviceId: el.serviceId,
-          }
-          this.servicesId.push(el)
-          this.loaded = true
-        })
-      })
-  }
-
-  search(){
-    if(this.searchText !== ''){
+  search() {
+    if (this.searchText !== '') {
       this.isSearchFill = true;
       this.reservationList.search(this.searchText);
-    }else{
+    } else {
       this.isSearchFill = false;
     }
   }
 
-  clear(){
-    this.isSearchFill=false;
-    this.searchText='';
+  clear() {
+    this.isSearchFill = false;
+    this.searchText = '';
     this.reservationList.clear();
   }
 }

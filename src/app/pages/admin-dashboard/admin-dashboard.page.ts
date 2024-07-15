@@ -1,15 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ViewWillEnter, ViewWillLeave } from '@ionic/angular';
 import { OwnerInfoComponent } from './components/owner-info/owner-info.component';
-import { ResourceService } from 'src/app/services/resource.service';
 import { ServicesBoardComponent } from './components/services-board/services-board.component';
 import { ReservationListComponent } from './components/reservation-list/reservation-list.component';
 import { ServicesService } from 'src/app/services/services.service';
-import { UsersService } from 'src/app/services/users.service';
 import { Router } from '@angular/router';
-import { Subscription, first } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { CriptoService } from 'src/app/services/cripto.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -25,72 +24,77 @@ import { Subscription, first } from 'rxjs';
     ReservationListComponent
   ]
 })
-export class AdminDashboardPage implements OnInit, OnDestroy, ViewWillLeave, ViewWillEnter{
+export class AdminDashboardPage implements OnInit, OnDestroy, ViewWillLeave, ViewWillEnter {
   subDashboard: Subscription;
+  loadData: String = "Recarregar Dados"
 
   currentUserId: number;
   activeServices: any[] = [];
-  servicesId:number[]=[];
+  servicesId: number[] = [];
 
   serviceId: any;
-  userId: number;
 
   editInfoClick: boolean = false
-  loaded:boolean;
+  loaded: boolean;
 
-  constructor(private resourceService: ResourceService, private services: ServicesService, private userService: UsersService, private router: Router) {
+  currentTime:any;
+
+  constructor(private services: ServicesService, private router: Router, private criptoService: CriptoService) {
   }
-  
+
   ionViewWillEnter(): void {
     this.activeServices = [];
-    this.reloadPage();
-    this.subDashboard = this.loadData()
+    this.subDashboard = this.loadServices(this.currentUserId)
   }
 
   ionViewWillLeave(): void {
+    this.activeServices = [];
     this.subDashboard.unsubscribe()
   }
 
   ngOnInit() {
+    this.currentUserId = parseInt(this.criptoService.getEncryptItem('userIdentification'));
+    this.getTime();
+
+    if(window.innerWidth <= 768){
+      this.loadData = "";
+    }
   }
 
   ngOnDestroy(): void {
-    this.subDashboard.unsubscribe()
+    this.subDashboard.unsubscribe();
   }
 
   addServices() {
     this.router.navigate(['admin/services', 'create'])
   }
 
-  loadData() {
-  return this.resourceService.currentUser().subscribe(data => {
-      this.currentUserId = data.id;
-      this.userId = data.id;
-      this.loadUserInfo(data.id)
-    })
+  getTime(){
+    let time = new Date()
+    return this.currentTime = time.toLocaleDateString() +' as '+ time.toLocaleTimeString();
   }
 
-  loadUserInfo(id) {
-      this.userService.getUserById(id).pipe(first()).subscribe(
-      data => {
-        data.services.forEach(el => {
-          el = {
+  loadServices(id:number) {
+    let activeServicesArr: any[] = [];
+    return this.services.getServicesByOwner(id).subscribe(data=>{
+      data.forEach(el => {
+          el={
             serviceId: el.serviceId,
             serviceName: el.serviceName,
             timeWork: `${(el.startTime).slice(0, 5)}h as ${(el.endTime).slice(0, 5)}h`
           }
           this.servicesId.push(el.serviceId);
-          this.activeServices.push(el)
-          this.loaded = true
-        })
-      })
+          activeServicesArr.push(el);
+          this.loaded = true;
+      });
+      this.criptoService.setItemToLocalStorage(JSON.stringify(activeServicesArr), 'activeServices');
+      this.activeServices = JSON.parse(this.criptoService.getEncryptItem('activeServices'));
+    });
   }
 
-  reloadPage() {
-    this.router.navigateByUrl('/admin/dashboard', { skipLocationChange: true }).then(() => {
-    this.router.navigate([this.router.url]);
-    });
-    }
+  reload(){
+    location.reload()
+  }
 
 }
 

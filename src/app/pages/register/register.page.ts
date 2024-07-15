@@ -1,5 +1,5 @@
 import { UsersService } from './../../services/users.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators, FormBuilder } from '@angular/forms';
 import { SharedModule } from 'src/app/modules/common-module/shared';
 import { MaskitoOptions, MaskitoElementPredicate } from '@maskito/core';
@@ -79,7 +79,6 @@ export class RegisterPage implements OnInit {
 
     
       const bg_parallax = document.getElementsByClassName("login-container"); 
-      console.log(bg_parallax);
       Array.prototype.forEach.call(bg_parallax, (el: HTMLElement) => {
         let bgPos = {
           x: 50,

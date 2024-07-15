@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -10,7 +10,7 @@ export class ImageService {
   constructor(private httpClient: HttpClient) { 
   }
 
-  insertImage(file:any, id:any):Observable<any>{
+  insertImage(file:File, id:any):Observable<any>{
     const foto = file
     const formData = new FormData();
     formData.append('file', foto);
@@ -18,7 +18,7 @@ export class ImageService {
 return this.httpClient.post<any>(`/resource/pic/db/upload/${id}`, formData);
 }
 
-  uploadNewImage(file:any, id:any):Observable<any>{
+  uploadNewImage(file:File, id:any):Observable<any>{
       const foto = file
       const formData = new FormData();
       formData.append('file', foto);

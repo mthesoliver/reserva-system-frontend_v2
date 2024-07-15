@@ -22,15 +22,6 @@
     transition: cubic-bezier(0.075, 0.82, 0.165, 1) .6s;
 }
 
-/** media **/
-@media screen and (max-width:768px) {
-    .service-card {
-        margin-top: 0;
-        padding-top: 0;
-    }
-}
-
-
 /** tooltip **/
 .header-container {
     display: flex;
@@ -102,4 +93,22 @@
     height: 12px;
     transform: rotate(45deg);
     z-index: -2;
+}
+
+
+
+/** media **/
+@media screen and (max-width:768px) {
+    .service-card {
+        margin-top: 0;
+        padding-top: 0;
+    }
+
+    ion-card-title{
+        font-size: calc((var(--font-lg) * 1.125)) !important;
+    }
+
+    ion-card-subtitle{
+        font-size: calc((var(--font-md) * 1.225)) !important;
+    }
 }

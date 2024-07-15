@@ -1,13 +1,67 @@
-<ion-header [translucent]="false" [ngStyle]="{'display': menuVisibility ? 'block' : 'none'}">
+<ion-header [translucent]="false" [ngStyle]="{'display': menuVisibility ? 'block' : 'none'}" *ngIf="!isMobile">
   <ion-toolbar>
-    <ion-title slot="start" color="primary"> Reserva.com</ion-title>
+    <ion-title slot="start" color="primary" routerLink="/home" id="logo"> Reserva.com</ion-title>
     <ion-buttons slot="end">
-      <ion-button routerLink="/home">Home</ion-button>
-      <!-- <ion-button routerLink="/user" *ngIf="isLogged">User</ion-button> -->
+      <ion-button routerLink="/home" *ngIf="!isAdmin">Home</ion-button>
       <ion-button routerLink="/admin/reservas" *ngIf="isAdmin">Acessar reservas</ion-button>
-      <ion-button routerLink="/admin/dashboard" *ngIf="isAdmin">Admin</ion-button>
-      <ion-button type="Button" color="success" (click)="onLogin()" *ngIf="!isLogged" >Login</ion-button>
-      <ion-button type="Button" color="danger" (click)="onLogout()" *ngIf="isLogged">Logout</ion-button>
+      <ion-button routerLink="/admin/dashboard" *ngIf="isAdmin">Painel administrativo</ion-button>
+      <ion-button type="Button" color="success" (click)="onLogin()" *ngIf="!isLogged">Conectar</ion-button>
+      <ion-button type="Button" color="danger" (click)="onLogout()" *ngIf="isLogged" fill="outline"
+        shape="round">Desconectar</ion-button>
+      <ion-avatar (click)="goToPersonalInfo()" *ngIf="isAdmin">
+        <img alt="Silhouette of a person's head" src="{{avatar}}">
+      </ion-avatar>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
+
+
+<ion-header [translucent]="false" [ngStyle]="{'display': menuVisibility ? 'block' : 'none'}" *ngIf="isMobile">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/dashboard"></ion-back-button>
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title slot="start" color="primary" routerLink="/home" id="logo"> Reserva.com</ion-title>
+    <ion-buttons slot="end">
+      <ion-avatar (click)="goToPersonalInfo()" *ngIf="isAdmin">
+        <img alt="Silhouette of a person's head" src="{{avatar}}">
+      </ion-avatar>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-menu contentId="main-content" *ngIf="isMobile">
+  <ion-header [translucent]="false">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button>
+          <ion-icon name="close"></ion-icon>
+        </ion-menu-button>
+      </ion-buttons>
+      <ion-title slot="start" color="primary" routerLink="/home" id="logo"> Reserva.com</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="ion-padding" id="content-menu">
+    <ion-buttons class="menu-mobile">
+      <ion-button routerLink="/home" *ngIf="!isAdmin">Home</ion-button>
+      <ion-menu-toggle>
+        <ion-button routerLink="/admin/dashboard" *ngIf="isAdmin">Painel administrativo</ion-button>
+      </ion-menu-toggle>
+      <ion-menu-toggle>
+        <ion-button routerLink="/admin/reservas" *ngIf="isAdmin">Acessar reservas</ion-button>
+      </ion-menu-toggle>
+      <ion-button type="Button" color="success" (click)="onLogin()" *ngIf="!isLogged">Conectar</ion-button>
+      <ion-button type="Button" color="danger" (click)="onLogout()" *ngIf="isLogged" fill="outline" shape="round"
+        id="desconect">Desconectar</ion-button>
+    </ion-buttons>
+  </ion-content>
+</ion-menu>
+
+<div class="ion-page" id="main-content">
+  <ion-header>
+  </ion-header>
+  <ion-content class="ion-padding"></ion-content>
+</div>

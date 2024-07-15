@@ -1,3 +1,4 @@
+import { CriptoService } from './cripto.service';
 import { Observable, first } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -8,16 +9,14 @@ import { environment } from 'src/environments/environment';
 })
 export class ResourceService {
 
-  private resourceUrl = environment.resource_url;
-
   constructor(private httpClient: HttpClient) { }
 
   public user() :Observable<any>{
-    return this.httpClient.get<any>(this.resourceUrl + 'user');
+    return this.httpClient.get<any>('/resource/user');
   }
 
   public admin() :Observable<any>{
-    return this.httpClient.get<any>(this.resourceUrl + 'admin');
+    return this.httpClient.get<any>('/resource/admin');
   }
 
   public logged():Observable<any>{

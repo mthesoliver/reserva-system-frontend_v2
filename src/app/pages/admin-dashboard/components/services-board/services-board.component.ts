@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SharedModule } from 'src/app/modules/common-module/shared';
-import { ResourceService } from 'src/app/services/resource.service';
 
 @Component({
   selector: 'app-services-board',
@@ -24,10 +23,10 @@ export class ServicesBoardComponent implements OnInit {
   isAdmin:boolean
 
 
-  constructor(private router:Router, private resourceService: ResourceService) {}
+  constructor(private router:Router) {}
 
   ngOnInit() {
-    if(this.resourceService.getUserRoleToStorage() === "ADMIN"){
+    if(localStorage.getItem('role') === "ADMIN"){
       this.isAdmin = true
     }
   }

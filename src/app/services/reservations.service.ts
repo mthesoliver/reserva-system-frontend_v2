@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, first } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'any'
@@ -19,6 +19,10 @@ export class ReservationsService {
 
   getReservationsByDate(id:any, date:any){
     return this.httpClient.get<any>(`/resource/services/${id}/${date}/reservations`);
+  }
+
+  getReservationsByStatusAguardando(id:any):Observable<any>{
+    return this.httpClient.get<any>(`/resource/services/${id}/reservations/aguardando`)
   }
 
   updateReservation(serviceId:number, reservationId: number, body): Observable<any> {

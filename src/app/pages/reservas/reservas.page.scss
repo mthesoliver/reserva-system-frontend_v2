@@ -1,3 +1,18 @@
 ion-item{
     --border-style:none;
 }
+
+/** media **/
+@media screen and (max-width:768px) {
+    ion-input[name="busca"]{
+        width: 90vw!important;
+    }
+
+    .media-container ion-row{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start !important;
+        width: 100%!important;
+        height: 60px!important;
+    }
+}

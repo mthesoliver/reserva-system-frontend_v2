@@ -4,9 +4,7 @@ import { SharedModule } from 'src/app/modules/common-module/shared';
 import { OwnerInfoComponent } from '../admin-dashboard/components/owner-info/owner-info.component';
 import { ServicesBoardComponent } from '../admin-dashboard/components/services-board/services-board.component';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ResourceService } from 'src/app/services/resource.service';
-import { ServicesService } from 'src/app/services/services.service';
+import { ActivatedRoute } from '@angular/router';
 import { UsersService } from 'src/app/services/users.service';
 
 @Component({
@@ -40,7 +38,7 @@ export class PublicProfilePage implements OnInit, ViewWillEnter, ViewWillLeave {
   currentUserInfoPhone: string;
   profileImg:string;
 
-  constructor(private resourceService: ResourceService, private services: ServicesService, private userService: UsersService, private router: Router, private activatedRoute: ActivatedRoute) {
+  constructor(private userService: UsersService, private activatedRoute: ActivatedRoute) {
     this.serviceOwnerName = this.activatedRoute.snapshot.paramMap.get("name");
   }
 

@@ -1,40 +1,208 @@
-@media screen and (max-width:768px){
-    ion-grid{
+@media screen and (max-width:768px) {
+    ion-grid {
         max-width: 90vw;
     }
 
-    .media-container{
+    .media-container {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
     }
 
-        #service-row{
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+    #service-row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .time-col {
+        padding-left: 2rem;
+        display: none
+    }
+
+    .form-col {
+        padding-right: 2rem;
+    }
+
+
+    .input-title {
+        font-size: calc(var(--font-md) + .125rem);
+        margin-block: 2rem 1rem;
+    }
+
+    .time-select {
+        display: flex !important;
+        max-width: 100% !important;
+        margin-right: auto !important;
+        margin-bottom: 1rem;
+    }
+
+    /* USER INFORMATIONS */
+    .bg-color {
+        background-color: #F2F2F2;
+        border: #e7e7e7 1px solid;
+    }
+
+    .profile-img {
+        max-width: 120px !important;
+        max-height: 120px !important;
+        border-radius: 50%;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+    }
+
+    .info-list {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: start;
+
+        h4 {
+            color: var(--ion-color-primary);
+            font-size: var(--font-lg);
+            font-weight: 800;
+            line-height: calc(var(--font-lg) - 1rem);
+            cursor: pointer;
+            transition: .3s;
         }
-        
-        .time-col{
-            padding-left: 2rem;
-            display: none
+
+        h4:hover {
+            color: var(--ion-color-secondary) !important;
+            transition: .3s;
         }
-        
-        .form-col{
-            padding-right: 2rem;
+
+        p,
+        a {
+            text-align: center !important;
+            font-size: calc(var(--font-md) + .225rem) !important;
+            line-height: calc(var(--font-lg) - .225rem) !important;
+            margin-bottom: 1rem !important;
+            text-decoration: none;
         }
-        
-        
-        .input-title{
-            font-size: calc(var(--font-md) + .125rem);
-            margin-block: 2rem 1rem;
+    }
+
+
+    .info-buttons {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: end;
+    }
+
+    .url {
+        font-size: calc(var(--font-md) + .325rem) !important;
+        line-height: calc(var(--font-lg) + .325rem) !important;
+    }
+
+    .copy-link {
+        cursor: pointer;
+        color: var(--ion-color-primary);
+        position: relative;
+        top: 2px;
+        padding-left: .425rem;
+        font-size: 22px !important;
+    }
+
+    .copied {
+        font-size: 16px !important;
+    }
+
+    /* FIM USER INFORMATIONS */
+
+    /* SERVICES BOARD */
+    .service-card {
+        ion-card-title {
+            font-size: calc(var(--font-lg) + .425rem) !important;
         }
-        
-        .time-select{
-            display: flex!important;
-            max-width: 100% !important;
-            margin-right: auto!important;
-            margin-bottom: 1rem;
+    }
+
+    ion-card-subtitle {
+        font-size: calc(var(--font-lg) - .25rem) !important;
+    }
+
+
+    .edit-icon {
+        width: 2rem !important;
+        padding-left: 100px !important;
+        cursor: pointer;
+    }
+
+    /* END SERVICES BOARD */
+
+    /* ADMIN DASHBOARD */
+    .active-services-grid ion-row {
+        margin-top: 2rem !important;
+    }
+
+    .active-services-grid ion-col {
+        display: flex;
+        flex-direction: column-reverse !important;
+
+        h1 {
+            font-size: calc(var(--font-lg) + .525rem);
+            margin-bottom: 0rem;
         }
+    }
+
+    .last-reservations ion-col {
+        display: flex;
+        flex-direction: row !important;
+
+        h1 {
+            font-size: calc(var(--font-lg) + .525rem);
+            margin-bottom: 0;
+        }
+    }
+
+    .last-reservations ion-row {
+        display: grid;
+        grid-template-columns: 80% 20%;
+    }
+
+    .time-stamp {
+        font-size: calc(var(--font-sm) + .325rem) !important;
+        margin-top: 0;
+    }
+
+    /* FIM ADMIN DASHBOARD */
+
+    ion-col h1 {
+        font-size: calc(var(--font-lg) + .525rem) !important;
+        margin-bottom: 0rem;
+    }
+
+    app-reservation-list {
+        display: block;
+        overflow-x: scroll;
+        margin-bottom: 2rem;
+    }
+
+    /* MODAL */
+    .modal-content ion-select {
+        width: 100% !important;
+        margin: auto;
+    }
+
+    ion-modal {
+        width: 100%;
+        padding-inline: 1rem !important;
+    }
+
+    .modal-content {
+        padding: 1rem !important;
+        width: 100% !important;
+        margin: auto !important;
+    }
+
+    .modal-content section {
+        width: 100% !important;
+        margin: auto !important;
+    }
+    /* FIM MODAL */
+
+    .bg-title, .service-name {
+        font-size: 3.5rem !important;
+        line-height:3rem!important ;
+    }
 }
