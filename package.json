@@ -38,6 +38,7 @@
     "gsap": "^3.12.5",
     "ionic2-calendar": "^2.4.0",
     "ionicons": "^7.2.1",
+    "reserva-system-frontend": "file:",
     "rxjs": "~7.8.0",
     "swiper": "^11.1.0",
     "tslib": "^2.3.0",

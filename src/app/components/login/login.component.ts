@@ -20,16 +20,16 @@ const CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567
   ]
 })
 export class LoginComponent  implements OnInit {
-  authorize_uri = environment.authorize_gateway;
+  // authorize_uri = environment.authorize_gateway;
 
-  params: any = {
-    response_type: environment.response_type,
-    client_id: environment.client_id,
-    scope: environment.scope,
-    redirect_uri: environment.redirect_uri,
-    response_mode: environment.response_mode,
-    code_challenge_method: environment.code_challenge_method
-  }
+  // params: any = {
+  //   response_type: environment.response_type,
+  //   client_id: environment.client_id,
+  //   scope: environment.scope,
+  //   redirect_uri: environment.redirect_uri,
+  //   response_mode: environment.response_mode,
+  //   code_challenge_method: environment.code_challenge_method
+  // }
 
   constructor(private userService: UsersService, private route:Router) { 
   }
@@ -39,8 +39,8 @@ export class LoginComponent  implements OnInit {
   }
 
   onLogin(): void {
-    location.href='http://127.0.0.1:8081/oauth2/authorization/gateway?'
-    //location.href='http://reserva-gateway:8081/oauth2/authorization/gateway?'
+    //location.href='http://127.0.0.1:8081/oauth2/authorization/gateway?'
+    location.href='http://reserva-gateway:8081/oauth2/authorization/gateway?'
   }
 
 }

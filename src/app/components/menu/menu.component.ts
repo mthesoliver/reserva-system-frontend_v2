@@ -28,6 +28,7 @@ export class MenuComponent implements OnInit {
   isLogged:boolean;
   isAdmin:boolean;
   isMobile:boolean;
+  logoutUrl:string = "http://auth-service:9000/logout";
 
   menuVisibility:boolean;
   @Input()
@@ -65,7 +66,7 @@ export class MenuComponent implements OnInit {
   onLogout(){
     this.resourceService.clearUserRoleToStorage();
     localStorage.clear();
-    window.location.href = 'http://127.0.0.1:9000/logout';
+    window.location.href = this.logoutUrl;
   }
 
   onLogin(){

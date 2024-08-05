@@ -1,3 +1,5 @@
+import { HttpErrorResponse } from '@angular/common/http';
+import { LoadingController } from '@ionic/angular';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -13,15 +15,15 @@ import { ServicesService } from 'src/app/services/services.service';
   selector: 'app-create-service',
   templateUrl: './create-service.component.html',
   styleUrls: ['./create-service.component.scss'],
-  standalone:true,
-  imports:[
-    SharedModule, 
+  standalone: true,
+  imports: [
+    SharedModule,
     NgCalendarModule,
     FormsModule,
     ReactiveFormsModule,
   ]
 })
-export class CreateServiceComponent  implements OnInit, OnDestroy {
+export class CreateServiceComponent implements OnInit, OnDestroy {
   @ViewChild(CalendarComponent) myCal!: CalendarComponent;
 
   newService: ServiceUpdate = new ServiceUpdate();
@@ -61,10 +63,10 @@ export class CreateServiceComponent  implements OnInit, OnDestroy {
   });
 
 
-  constructor(private fb: FormBuilder, private serviceServices: ServicesService, private router:Router, private convertDays:ConvertDaysService, private criptoService:CriptoService) { }
+  constructor(private fb: FormBuilder, private serviceServices: ServicesService, private router: Router, private convertDays: ConvertDaysService, private criptoService: CriptoService, private loadingCtrl: LoadingController) { }
 
   ngOnInit() {
-    this.newService.diasDisponiveis =[];
+    this.newService.diasDisponiveis = [];
     this.setDaysOpen();
     this.newService.userId = parseInt(this.criptoService.getEncryptItem('userIdentification'));
   }
@@ -105,10 +107,10 @@ export class CreateServiceComponent  implements OnInit, OnDestroy {
 
   setDaysOpen() {
     let checkbox = document.querySelectorAll('ion-checkbox')
-      if(this.newService.diasDisponiveis.length <=0 ){
+    if (this.newService.diasDisponiveis.length <= 0) {
       this.convertDays.convertDaysOfDatabaseToIndex(this.newService.diasDisponiveis, this.insertDiasOpen, checkbox);
       this.today()
-    }else{
+    } else {
       null
     }
   }
@@ -124,7 +126,7 @@ export class CreateServiceComponent  implements OnInit, OnDestroy {
     } else {
       this.insertDiasOpen.push(parseInt(event.value));
     }
-    
+
     this.today();
   }
 
@@ -135,8 +137,14 @@ export class CreateServiceComponent  implements OnInit, OnDestroy {
     this.newService.horarioFinal = this.serviceUpdateForm.value.endTime + ':00';
     this.newService.diasDisponiveis = diasDisponiveis;
 
-    this.serviceServices.insertNewService(this.newService).subscribe();
-    this.router.navigate(['admin/dashboard'])
+    this.serviceServices.insertNewService(this.newService).subscribe(()=>{
+      this.loadingCtrl.dismiss()
+      this.router.navigate(["admin/dashboard"]);
+      }, (error:HttpErrorResponse)=>{
+        this.loadingCtrl.dismiss()
+        alert('Error: ' + error.status);
+        this.router.navigate(["admin/dashboard"]);
+      });
   }
 
 }

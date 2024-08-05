@@ -6,6 +6,7 @@ WORKDIR /app
 
 # Copia o arquivo package.json e o package-lock.json para o diretório de trabalho
 COPY package*.json ./
+#COPY angular.json ./
 
 # Instala as dependências da aplicação
 RUN npm install
@@ -23,4 +24,7 @@ COPY . .
 EXPOSE 4200
 
 # Comando para iniciar a aplicação
-CMD ["ionic", "serve", "--host", "0.0.0.0", "--port", "4200", "--disable-host-check"]
+CMD ["ionic", "serve", "--host", "0.0.0.0", "--port", "4200", "--disableHostCheck"]
+
+# Comando para iniciar a aplicação
+#CMD ["npm", "start", "--disableHostCheck"]
