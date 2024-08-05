@@ -20,7 +20,7 @@ const CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567
   ]
 })
 export class LoginComponent  implements OnInit {
-  redirecUri = environment.authorize_gateway;
+  redirecUri = environment.redirect_gateway;
 
   constructor(private userService: UsersService, private route:Router) { 
   }
