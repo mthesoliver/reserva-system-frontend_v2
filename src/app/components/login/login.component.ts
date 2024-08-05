@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClientModule, HttpParams } from '@angular/common/http';
 import { SharedModule } from 'src/app/modules/common-module/shared';
-import { environment } from 'src/environments/environment';
 import * as CryptoJS from 'crypto-js';
 import { UsersService } from 'src/app/services/users.service';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment.prod';
 
 
 const CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -20,16 +20,7 @@ const CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567
   ]
 })
 export class LoginComponent  implements OnInit {
-  // authorize_uri = environment.authorize_gateway;
-
-  // params: any = {
-  //   response_type: environment.response_type,
-  //   client_id: environment.client_id,
-  //   scope: environment.scope,
-  //   redirect_uri: environment.redirect_uri,
-  //   response_mode: environment.response_mode,
-  //   code_challenge_method: environment.code_challenge_method
-  // }
+  redirecUri = environment.redirect_uri;
 
   constructor(private userService: UsersService, private route:Router) { 
   }
@@ -39,8 +30,8 @@ export class LoginComponent  implements OnInit {
   }
 
   onLogin(): void {
-    //location.href='http://127.0.0.1:8081/oauth2/authorization/gateway?'
-    location.href='https://reserva-gateway-e7b21d7a04ea.herokuapp.com/oauth2/authorization/gateway?'
+    location.href= this.redirecUri;
+    //location.href='https://reserva-gateway-e7b21d7a04ea.herokuapp.com/oauth2/authorization/gateway?'
   }
 
 }
