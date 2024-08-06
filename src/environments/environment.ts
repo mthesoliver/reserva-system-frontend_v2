@@ -3,6 +3,7 @@ export const environment = {
   production: false,
   authorize_uri: 'http://auth-service:9000/oauth2/authorize?',
   authorize_gateway:'/oauth2/authorization/gateway?',
+  redirect_gateway:'http://127.0.0.1:8081/oauth2/authorization/gateway?',
   client_id:'reserva-com',
   redirect_uri:'http://127.0.0.1:4200/authorized http://127.0.0.1:8081/login/oauth2/code/gateway http://reserva-gateway:8081/login/oauth2/code/gateway',
   scope:'openid profile',
