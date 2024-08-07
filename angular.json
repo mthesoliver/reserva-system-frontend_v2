@@ -41,8 +41,7 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/global.scss",
               "src/theme/variables.scss",
-              "src/**/*.scss",
-              "/**/*.scss"
+              "src/app/**/*.scss"
             ],
             "scripts": []
           },
