@@ -29,7 +29,7 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
+            "inlineStyleLanguage": "css",
             "assets": [
               {
                 "glob": "**/*",
@@ -40,8 +40,7 @@
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/global.scss",
-              "src/theme/variables.scss",
-              "src/app/**/*.scss"
+              "src/theme/variables.scss"
             ],
             "scripts": []
           },
