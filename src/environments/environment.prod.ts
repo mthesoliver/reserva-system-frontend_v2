@@ -12,5 +12,5 @@ export const environment = {
   token_url:'https://reserva-auth-service.up.railway.app/oauth2/token',
   grant_type:'authorization_code',
   logout_url:'https://reserva-auth-service.up.railway.app/logout',
-  secret_pkce:'secret'
+  secret_pkce:'secretsss'
 };
