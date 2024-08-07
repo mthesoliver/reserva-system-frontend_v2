@@ -1,1 +1,1 @@
-ionic serve --host 0.0.0.0 --port 4200 --disableHostCheck true
+ionic serve --host 0.0.0.0 --port 4200
