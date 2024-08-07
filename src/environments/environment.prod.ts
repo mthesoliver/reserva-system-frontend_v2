@@ -3,7 +3,7 @@ export const environment = {
   authorize_uri: 'https://reserva-auth-service.up.railway.app/oauth2/authorize?',
   authorize_gateway:'/oauth2/authorization/gateway?',
   redirect_gateway:'https://reserva-gateway-production.up.railway.app/oauth2/authorization/gateway?',
-  client_id:'reserva-com',
+  client_id:'railway',
   redirect_uri:'https://reserva-auth-service.up.railway.app/authorized https://reserva-gateway-production.up.railway.app/login/oauth2/code/gateway',
   scope:'openid profile',
   response_type:'code',
@@ -12,5 +12,5 @@ export const environment = {
   token_url:'https://reserva-auth-service.up.railway.app/oauth2/token',
   grant_type:'authorization_code',
   logout_url:'https://reserva-auth-service.up.railway.app/logout',
-  secret_pkce:'secret'
+  secret_pkce:'railway_123'
 };
