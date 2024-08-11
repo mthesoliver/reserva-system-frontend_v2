@@ -28,6 +28,22 @@
 	# serve from the set folder
 	root * {$ANGULAR_OUTPUT_PATH}
 
+	reverse_proxy /* https://reserva-gateway-production.up.railway.app {
+        header_up Authorization {http.request.header.Authorization}
+        header_up X-Forwarded-For {http.request.header.X-Forwarded-For}
+        header_up X-Forwarded-Proto {http.request.scheme}
+    }
+
+    handle @corsOptions {
+        header {
+            Access-Control-Allow-Origin *
+            Access-Control-Allow-Methods *
+            Access-Control-Allow-Headers *
+			Access-Control-Allow-Credentials true
+        }
+        respond "CORS preflight response" 204
+    }
+
 	header {
 		# CORS headers
 		Access-Control-Allow-Origin *
