@@ -33,6 +33,7 @@
 		Access-Control-Allow-Origin *
 		Access-Control-Allow-Methods *
 		Access-Control-Allow-Headers *
+		Access-Control-Allow-Credentials true
 
 		# Authorization headers
 		# Authorization "Basic {base64(reserva-com:secret)}"
