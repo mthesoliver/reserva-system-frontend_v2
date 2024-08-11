@@ -27,12 +27,6 @@
 
 	# serve from the set folder
 	root * {$ANGULAR_OUTPUT_PATH}
-
-	reverse_proxy /* https://reserva-gateway-production.up.railway.app {
-        header_up Authorization {http.request.header.Authorization}
-        header_up X-Forwarded-For {http.request.header.X-Forwarded-For}
-        header_up X-Forwarded-Proto {http.request.scheme}
-    }
 	
 	@corsOptions method OPTIONS
     handle @corsOptions {
