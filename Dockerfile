@@ -18,7 +18,7 @@ RUN npm install -g @ionic/cli
 COPY . /usr/local/app
 
 # Compila a aplicação Ionic (opcional, dependendo da configuração do seu projeto)
-RUN ionic build --prod --engine=browser
+RUN ionic build --prod --browser
 
 # Use official nginx image as the base image
 FROM nginx:latest

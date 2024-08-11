@@ -1,8 +1,7 @@
 {
   "name": "reserva-system-frontend",
   "integrations": {
-    "capacitor": {},
-    "cordova": {}
+    "capacitor": {}
   },
   "type": "angular-standalone"
 }
