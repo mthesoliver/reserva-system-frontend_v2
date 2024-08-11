@@ -33,8 +33,8 @@
         header_up X-Forwarded-For {http.request.header.X-Forwarded-For}
         header_up X-Forwarded-Proto {http.request.scheme}
     }
-
-    handle @cors {
+	
+    handle @cors_preflight {
         header {
             Access-Control-Allow-Origin *
             Access-Control-Allow-Methods *
