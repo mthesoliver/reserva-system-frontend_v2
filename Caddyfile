@@ -10,6 +10,8 @@
 	# server options
 	servers {
 		trusted_proxies static private_ranges 100.0.0.0/8 # trust railway's proxy
+		client_ip_headers X-Forwarded-For X-Real-IP
+		log_credentials
 	}
 }
 
@@ -26,6 +28,16 @@
 	# serve from the set folder
 	root * {$ANGULAR_OUTPUT_PATH}
 
+	header {
+		# CORS headers
+		Access-Control-Allow-Origin *
+		Access-Control-Allow-Methods *
+		Access-Control-Allow-Headers *
+		
+		# Authorization headers
+		Authorization "Basic {base64(reserva-com:secret)}"
+	}
+	
 	# enable gzipping responses
 	encode gzip
 
