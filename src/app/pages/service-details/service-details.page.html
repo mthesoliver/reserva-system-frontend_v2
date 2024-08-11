@@ -1,0 +1,69 @@
+<ion-toolbar>
+</ion-toolbar>
+
+<ion-content [fullscreen]="true">
+  <section class="container">
+    
+    <h1 class="ion-padding-top service-name">Detalhes do Serviço</h1>
+
+    <ion-row class="services-calendar-container" id="service-row">
+      <ion-col size-lg="5" size-md="5" size="auto" class="calendar-col">
+        <ion-toolbar>
+          <ion-nav>
+            <ion-title style="text-transform: capitalize;" color="primary"
+              class="ion-text-center">{{viewTitle}}</ion-title>
+            <ion-buttons class="ion-justify-content-between">
+              <ion-button (click)="calendarBack()"><ion-icon
+                  name="chevron-back-outline"></ion-icon>Anterior</ion-button>
+              <ion-button [disabled]="isToday" (click)="today()">Hoje</ion-button>
+              <ion-button (click)="calendarForward()">Próximo<ion-icon
+                  name="chevron-forward-outline"></ion-icon></ion-button>
+            </ion-buttons>
+          </ion-nav>
+        </ion-toolbar>
+        <calendar class="services-calendar-reservation" 
+          [eventSource]="eventSource" 
+          [calendarMode]="calendar.mode"
+          [currentDate]="calendar.currentDate" 
+          [markDisabled]="markDisabled" [timeInterval]="30" 
+          [endHour]="setEndHour"
+          [startHour]="setStartHour" noEventsLabel="Sem reservas para esta data" 
+          allDayLabel="" 
+          (onCurrentDateChanged)="onCurrentDateChanged($event)"
+          (onEventSelected)="onEventSelected($event)" 
+          (onTitleChanged)="onViewTitleChanged($event)"
+          (onTimeSelected)="onTimeSelected($event)" 
+          [step]="calendar.step"
+          [monthviewDisplayEventTemplate]="monthviewDisplayEventTemplate">
+        </calendar>
+      </ion-col>
+
+      <ion-col size-lg="3" size-md="3.5" size="auto" class="time-col">
+        <ion-title color="primary">Horários disponíveis</ion-title>
+        <ion-segment>
+          <ion-list style="display: flex; flex-direction: column;" #timeButtons>
+            <ion-button fill="outline" *ngFor="let horas of horariosDisponiveis">{{horas}}</ion-button>
+          </ion-list>
+        </ion-segment>
+      </ion-col>
+
+      <ion-col size-lg="4" size-md="4" size="auto">
+        <ion-title color="primary" class="ion-padding-bottom">{{serviceName}}</ion-title>
+        <app-reservation-detail
+        [serviceId]="serviceId"
+        [reservationId]="reservationId" 
+        *ngIf="isLoaded">
+      </app-reservation-detail>
+      </ion-col>
+      
+    </ion-row>
+  </section>
+  </ion-content>
+
+  <ng-template #monthviewDisplayEventTemplate let-view="view" let-row="row" let-col="col">
+    {{view.dates[row*7+col].label}}
+    <div class="indicator-dot-container">
+      <div class="indicator-dot" *ngFor="let event of view.dates[row*7+col].events"></div>
+    </div>
+</ng-template>
+

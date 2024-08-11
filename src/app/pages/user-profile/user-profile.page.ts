@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedModule } from 'src/app/modules/common-module/shared';
-import { OwnerInfoComponent } from '../admin-dashboard/components/owner-info/owner-info.component';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MaskitoElementPredicate, MaskitoOptions } from '@maskito/core';
 import { UsersService } from 'src/app/services/users.service';
-import { ResourceService } from 'src/app/services/resource.service';
 import { MaskitoDirective } from '@maskito/angular';
 import { UserUpdate } from 'src/app/model/userUpdate';
+import { ImageService } from 'src/app/services/image.service';
+import { CriptoService } from 'src/app/services/cripto.service';
 
 
 @Component({
@@ -14,57 +14,104 @@ import { UserUpdate } from 'src/app/model/userUpdate';
   templateUrl: './user-profile.page.html',
   styleUrls: ['./user-profile.page.scss'],
   standalone: true,
-  imports: [SharedModule, OwnerInfoComponent, FormsModule,
+  imports: [SharedModule, FormsModule,
     ReactiveFormsModule, MaskitoDirective]
 })
 export class UserProfilePage implements OnInit {
-  profileImg:string = 'https://blog.davidstea.com/en/wp-content/uploads/2018/04/Placeholder.jpg'
+  profileImg: string = 'https://mtek3d.com/wp-content/uploads/2018/01/image-placeholder-500x500.jpg'
 
+  enableButton: boolean = false;
+
+  currentUser: any;
   userId;
-  userEmail:string;
-  userName:string;
-  userPhone:string;
+  userEmail: string;
+  userName: string;
+  userPhone: string;
+  hasProfilePic: boolean;
 
-  userUpdate:UserUpdate = new UserUpdate;
+  userUpdate: UserUpdate = new UserUpdate;
 
   registerForm = this.fb.group({
     nome: [null, Validators.compose([
-      Validators.required, Validators.minLength(3), Validators.maxLength(50)
+      Validators.minLength(3), Validators.maxLength(50)
     ])],
-    telefone: [null, Validators.compose([ 
-      Validators.required, Validators.minLength(10)
+    telefone: [null, Validators.compose([
+      Validators.minLength(10)
     ])]
   });
 
   readonly phoneMask: MaskitoOptions = {
-    mask: ['(', /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, /\d/, /\d/,  '-', /\d/, /\d/, /\d/, /\d/],
+    mask: ['(', /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/],
   };
 
   readonly maskPredicate: MaskitoElementPredicate = async (el) => (el as HTMLIonInputElement).getInputElement();
 
-  constructor(private fb: FormBuilder, private userService:UsersService, private resourceService:ResourceService) { }
+  constructor(private fb: FormBuilder, private userService: UsersService, private imageService: ImageService, private criptoService: CriptoService) { }
 
   ngOnInit() {
-    this.resourceService.currentUser().subscribe(
-      data=>{
-        this.userId = data.id;
-        this.userEmail = data.email;
-        this.userName = data.name;
-        this.userPhone = data.phone;
-      })
+    this.loadUserData()
   }
 
-  onSubmit(){
-    if(this.registerForm.value.telefone !== null){
-      let phone:string = this.registerForm.value.telefone;
-      this.userUpdate.telefone = phone.replace('(', '').replace(')', '').replace('-','').replace(' ', '').trim();
-      }
-      this.userUpdate.id = this.userId;
-      this.userUpdate.email = this.userEmail;
-      this.userUpdate.funcao = this.resourceService.getUserRoleToStorage();
-      
-      this.userService.updateUser(this.userUpdate).subscribe()
-      location.reload();
+  loadUserData() {
+    this.currentUser = JSON.parse(this.criptoService.getEncryptItem('currentUser'));
+
+    this.userId = this.currentUser.id;
+    this.userEmail = this.currentUser.email;
+    this.userName = this.currentUser.name;
+    this.userPhone = this.currentUser.phone;
+
+    if (this.currentUser.getProfilePicture !== null) {
+      this.profileImg = this.criptoService.getEncryptItem('userProfilePicture')
+      this.hasProfilePic = true;
+    } else {
+      this.hasProfilePic = false;
+    }
+  }
+
+  updateImage(ev: any) {
+    this.imageService.uploadNewImage(ev.files[0], this.userId).subscribe();
+    setTimeout(() => {
+      location.reload()
+    }, 2000)
+  }
+
+  insertImage(ev: any) {
+    this.imageService.insertImage(ev.files[0], this.userId).subscribe();
+    setTimeout(() => {
+      location.reload()
+    }, 2000)
+  }
+
+  validRegisterForm(): void {
+    if (this.registerForm.value.nome !== '' || this.registerForm.value.telefone !== '') {
+      this.enableButton = true;
+    } else {
+      this.enableButton = false;
+    }
+  }
+
+  onSubmit() {
+    this.userUpdate.id = this.userId;
+    this.userUpdate.email = this.userEmail;
+    this.userUpdate.funcao = localStorage.getItem('role');
+
+    if (this.registerForm.value.telefone !== undefined) {
+      let phone: string = this.registerForm.value.telefone;
+      this.userUpdate.telefone = phone.replace('(', '').replace(')', '').replace('-', '').replace(' ', '').trim();
+    } else {
+      this.userUpdate.telefone = this.userPhone;
+      console.log(this.userPhone);
+    }
+
+    if (this.registerForm.value.nome !== undefined) {
+      this.userUpdate.nome = this.registerForm.value.nome;
+    } else {
+      this.userUpdate.nome = this.userName;
+      console.log(this.userName);
+    }
+
+    this.userService.updateUser(this.userUpdate).subscribe()
+    location.reload();
   }
 
 }

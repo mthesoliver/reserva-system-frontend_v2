@@ -5,4 +5,5 @@ export class Reservation{
     horario:string;
     data:string;
     situacao:string;
+    dateTimeRequest?:Date;
 }

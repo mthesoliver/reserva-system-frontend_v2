@@ -30,7 +30,6 @@ export class HomePage implements OnInit {
     err =>{
       this.route.navigate(['login']);
     });
-    
     this.resourceService.currentUser().subscribe()
   }
   

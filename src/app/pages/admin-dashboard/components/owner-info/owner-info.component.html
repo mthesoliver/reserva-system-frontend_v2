@@ -5,15 +5,23 @@
       src="{{profileImg}}" alt="" srcset="">
     </ion-col>
     <ion-col size-md="5.6" offset-md=".3" size="auto" class="info-list">
-      <h4>{{currentUserInfoName}}</h4>
+      <h4 (click)="goToPublicPage()">{{currentUserInfoName}}</h4>
       <p><a href="mailto:{{currentUserInfoEmail}}" >{{currentUserInfoEmail}}</a></p>
       <p><a href="tel:{{currentUserInfoPhone}}">{{currentUserInfoPhone}}</a></p>
+      <p *ngIf="isAdmin">Seu link público:
+        <br>
+        <a href="{{publicLink}}" target="_blank" class="url"> {{publicLink}}</a> 
+        <ion-icon name="copy-outline" (click)="copyLink()" class="copy-link"></ion-icon>
+        <br>
+        <span class="copied" *ngIf="isCopied">Link copiado!</span>
+      </p>
     </ion-col>
     <ion-col size-md="4" size="auto" class="info-buttons">
-      <ion-button (click)="editInfo()">Editar informações</ion-button>
-      <ion-button *ngIf="!isAdmin">Entrar em contato via e-mail</ion-button>
-      <ion-button *ngIf="!isAdmin" color="success" >Entrar em contato via telefone</ion-button>
+      <ion-button (click)="editInfo()" *ngIf="isAdmin">Editar informações</ion-button>
+      <a href="mailto:{{currentUserInfoEmail}}" ><ion-button *ngIf="!isAdmin">Entrar em contato via e-mail</ion-button></a>
+      <a href="tel:{{currentUserInfoPhone}}"><ion-button *ngIf="!isAdmin" color="success" >Entrar em contato via telefone</ion-button></a>
     </ion-col>
   </ion-row>
 </ion-grid>
+
 

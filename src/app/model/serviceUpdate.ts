@@ -1,5 +1,5 @@
 export class ServiceUpdate{
-    id:number;
+    id?:number;
     nomeServico:string;
     diasDisponiveis:string[];
     horarioInicio:string;

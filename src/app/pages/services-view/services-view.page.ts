@@ -1,12 +1,16 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SharedModule } from 'src/app/modules/common-module/shared';
-import { OwnerInfoComponent } from '../admin-dashboard/components/owner-info/owner-info.component';
 import { CalendarComponent, CalendarMode, NgCalendarModule, Step } from 'ionic2-calendar';
 import { ServiceUpdate } from 'src/app/model/serviceUpdate';
-import { UsersService } from 'src/app/services/users.service';
-import { ResourceService } from 'src/app/services/resource.service';
+import { ViewWillEnter, ViewWillLeave } from '@ionic/angular';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ServicesService } from 'src/app/services/services.service';
+import { CreateServiceComponent } from './components/create-service/create-service.component';
+import { Subscription } from 'rxjs';
+import { IonModal } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CriptoService } from 'src/app/services/cripto.service';
+import { ConvertDaysService } from 'src/app/services/convert-days.service';
 
 @Component({
   selector: 'app-services-view',
@@ -15,21 +19,25 @@ import { ServicesService } from 'src/app/services/services.service';
   standalone: true,
   imports: [
     SharedModule,
-    OwnerInfoComponent,
     NgCalendarModule,
     FormsModule,
     ReactiveFormsModule,
+    CreateServiceComponent
   ]
 })
-export class ServicesViewPage implements OnInit {
+export class ServicesViewPage implements OnInit, OnDestroy, ViewWillLeave, ViewWillEnter {
 
   @ViewChild(CalendarComponent) myCal!: CalendarComponent;
+  @ViewChild(IonModal) modal: IonModal;
+
+  subService: Subscription;
+
+  existentService: boolean;
 
   serviceUpdated: ServiceUpdate = new ServiceUpdate();
   actualService = {}
-
-  eventSource;
   viewTitle;
+  bgTitle:string ="Editar Serviço";
 
   setStartHour: number = 0;
   setEndHour: number = 0;
@@ -47,66 +55,56 @@ export class ServicesViewPage implements OnInit {
       formatMonthViewDay: function (date: Date) {
         return date.getDate().toString();
       },
-      formatMonthViewDayHeader: function (date: Date) {
-        return 'MonMH';
-      },
-      formatMonthViewTitle: function (date: Date) {
-        return 'testMT';
-      },
-      formatWeekViewDayHeader: function (date: Date) {
-        return 'MonWH';
-      },
-      formatWeekViewTitle: function (date: Date) {
-        return 'testWT';
-      },
-      formatWeekViewHourColumn: function (date: Date) {
-        return 'testWH';
-      },
-      formatDayViewHourColumn: function (date: Date) {
-        return 'testDH';
-      },
-      formatDayViewTitle: function (date: Date) {
-        return 'testDT';
-      },
     },
   };
 
   serviceUpdateForm = this.fb.group({
     nome: [null, Validators.compose([
-      Validators.required, Validators.minLength(3), Validators.maxLength(50)
+      Validators.minLength(3), Validators.maxLength(50)
     ])],
     startTime: [null, Validators.compose([
-      Validators.required
+      Validators.minLength(3)
     ])],
     endTime: [null, Validators.compose([
-      Validators.required
+      Validators.minLength(3)
     ])],
   });
 
-  constructor(private userService: UsersService, private resourceService: ResourceService, private fb: FormBuilder, private serviceServices: ServicesService) { }
 
+  constructor(private activatedRoute: ActivatedRoute, private fb: FormBuilder, private serviceServices: ServicesService, private router: Router, private criptoService: CriptoService, private convertDays:ConvertDaysService) { }
+
+  ionViewWillEnter(): void {
+    this.subService = this.loadService();
+    this.verifyIfServiceExists(this.serviceUpdated.id)
+  }
+  
+  ionViewWillLeave(): void {
+    this.existentService = false;
+    this.subService.unsubscribe();
+  }
 
   ngOnInit() {
-    this.serviceUpdated.id = parseInt(this.resourceService.getServiceIdToStorage());
+    this.serviceUpdated.id = parseInt(this.activatedRoute.snapshot.paramMap.get("id"));
+    this.verifyIfServiceExists(this.serviceUpdated.id)
+  }
 
-    this.resourceService.currentUser().subscribe(
-      data => {
-        this.serviceUpdated.userId = data.id;
+  ngOnDestroy(): void {
+    this.existentService = false;
+    this.subService.unsubscribe();
+  }
 
-        this.userService.getUserById(data.id).subscribe(
-          data => {
-            data.services.forEach(el => {
-              this.actualService = el;
-
-              this.setStartHour = parseInt(this.actualService['startTime']);
-              this.setEndHour = parseInt(this.actualService['endTime']);
-
-              this.setDaysOpen();
-              this.availableHours(this.actualService)
-            })
-          }
-        )
-      })
+  loadService() {
+  return this.serviceServices.getServicesByOwner(JSON.parse(this.criptoService.getEncryptItem('userIdentification'))).subscribe(data => {
+      data.forEach(el => {
+        if (el.serviceId === parseInt(location.href.split('/').slice(-1).toString())) {
+          this.actualService = el;
+          this.setStartHour = parseInt(this.actualService['startTime']);
+          this.setEndHour = parseInt(this.actualService['endTime']);
+          this.setDaysOpen(this.actualService['availableDays']);
+          this.availableHours(this.actualService);
+        }
+      });
+    })
   }
 
   calendarBack() {
@@ -117,64 +115,18 @@ export class ServicesViewPage implements OnInit {
     this.myCal.slideNext();
   }
 
-
-  loadEvents() {
-    console.log(this.eventSource);
-  }
-
   onViewTitleChanged(title) {
     this.viewTitle = title;
-  }
-
-  onEventSelected(event) {
-    console.log(
-      'Event selected:' +
-      event.startTime +
-      '-' +
-      event.endTime +
-      ',' +
-      event.title
-    );
-  }
-
-  changeMode(mode) {
-    this.calendar.mode = mode;
   }
 
   today() {
     this.calendar.currentDate = new Date();
   }
 
-  onTimeSelected(ev) {
-    console.log(
-      'Selected time: ' +
-      ev.selectedTime +
-      ', hasEvents: ' +
-      (ev.events !== undefined && ev.events.length !== 0) +
-      ', disabled: ' +
-      ev.disabled
-    );
-  }
-
-  onCurrentDateChanged(event: Date) {
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
-    event.setHours(0, 0, 0, 0);
-    this.isToday = today.getTime() === event.getTime();
-  }
-
-
-  onRangeChanged(ev) {
-    console.log(
-      'range changed: startTime: ' + ev.startTime + ', endTime: ' + ev.endTime
-    );
-  }
-
   markDisabled = (date: Date) => {
     var current = new Date();
     current.setHours(0, 0, 0);
     return (
-      date < current ||
       (date.getDay() !== this.diasOpen[0] &&
         date.getDay() !== this.diasOpen[1] &&
         date.getDay() !== this.diasOpen[2] &&
@@ -185,91 +137,35 @@ export class ServicesViewPage implements OnInit {
     );
   };
 
-
-  setDaysOpen() {
+  setDaysOpen(service:any[]) {
     let checkbox = document.querySelectorAll('ion-checkbox')
-    return this.actualService['availableDays'].forEach(el => {
-      switch (el) {
-        case "SUNDAY":
-          this.diasOpen.push(0);
-          checkbox[0].checked = true;
-          break;
-        case "MONDAY":
-          this.diasOpen.push(1);
-          checkbox[1].checked = true;
-          break;
-        case "TUESDAY":
-          this.diasOpen.push(2);
-          checkbox[2].checked = true;
-          break;
-        case "WEDNESDAY":
-          this.diasOpen.push(3);
-          checkbox[3].checked = true;
-          break;
-        case "THURSDAY":
-          this.diasOpen.push(4);
-          checkbox[4].checked = true;
-          break;
-        case "FRIDAY":
-          this.diasOpen.push(5);
-          checkbox[5].checked = true;
-          break;
-        case "SATURDAY":
-          this.diasOpen.push(6);
-          checkbox[6].checked = true;
-          break;
-      }
-      this.today();
-    });
-
+    this.convertDays.convertDaysOfDatabaseToIndex(service, this.diasOpen, checkbox);
+    this.today()
   }
 
   activeCheckbox(event) {
-    if (!event.checked && !event.value.includes(this.diasOpen)) {
+    if (!event.checked && !event.value.includes(this.diasOpen) || this.diasOpen.length === 0) {
       this.diasOpen.push(parseInt(event.value));
-    } else if (event.checked) {
+    } else if (event.checked || event.value.includes(this.diasOpen)) {
       const index = this.diasOpen.indexOf(parseInt(event.value));
       if (index > -1) {
         this.diasOpen.splice(index, 1);
       }
-    } else if (event.value.includes(this.diasOpen)) {
-      console.log("Valor incluido");
+    }else {
+      this.diasOpen.push(parseInt(event.value));
     }
-    
     this.today();
   }
 
   onSubmit() {
     let diasDisponiveis = [];
-    this.diasOpen.forEach(el => {
-      switch (el) {
-        case 0:
-          diasDisponiveis.push("SUNDAY");
-          break;
-        case 1:
-          diasDisponiveis.push("MONDAY");
-          break;
-        case 2:
-          diasDisponiveis.push("TUESDAY");
-          break;
-        case 3:
-          diasDisponiveis.push("WEDNESDAY");
-          break;
-        case 4:
-          diasDisponiveis.push("THURSDAY");
-          break;
-        case 5:
-          diasDisponiveis.push("FRIDAY");
-          break;
-        case 6:
-          diasDisponiveis.push("SATURDAY");
-          break;
-      }
-    })
-    this.serviceUpdated.horarioInicio = this.serviceUpdateForm.value.startTime + ':00';
-    this.serviceUpdated.horarioFinal = this.serviceUpdateForm.value.endTime + ':00';
-    this.serviceUpdated.diasDisponiveis = diasDisponiveis;
+    this.convertDays.convertDaysOfIndexToDatabase(diasDisponiveis, this.diasOpen);    
+    this.serviceUpdateForm.value.startTime === undefined? this.serviceUpdated.horarioInicio = this.actualService['startTime'] :this.serviceUpdated.horarioInicio = this.serviceUpdateForm.value.startTime + ':00';
+    this.serviceUpdateForm.value.endTime === undefined?  this.serviceUpdated.horarioFinal = this.actualService['endTime'] : this.serviceUpdated.horarioFinal = this.serviceUpdateForm.value.endTime + ':00';
+    this.serviceUpdateForm.value.nome === undefined? this.serviceUpdated.nomeServico = this.actualService['serviceName']: this.serviceUpdated.nomeServico = this.serviceUpdateForm.value.nome;
+    this.serviceUpdated.diasDisponiveis === this.actualService['availableDays']?  this.serviceUpdated.diasDisponiveis = this.actualService['availableDays']:this.serviceUpdated.diasDisponiveis = diasDisponiveis;
 
+    this.serviceUpdated.userId = parseInt(this.criptoService.getEncryptItem('userIdentification'));
     this.serviceServices.updateServiceById(this.serviceUpdated).subscribe();
     location.reload();
   }
@@ -279,9 +175,37 @@ export class ServicesViewPage implements OnInit {
     let horarioFinal = data.endTime.slice(0, 5);
 
     for (let i = parseInt(horarioInicio); i < parseInt(horarioFinal); i++) {
-      this.horariosDisponiveis.push(i + ':00h');
-      this.horariosDisponiveis.push(i + ':30h');
+      if (i < 10) {
+        this.horariosDisponiveis.push('0' + i + ':00h');
+        this.horariosDisponiveis.push('0' + i + ':30h');
+      } else {
+        this.horariosDisponiveis.push(i + ':00h');
+        this.horariosDisponiveis.push(i + ':30h');
+      }
     }
+  }
+
+  verifyIfServiceExists(id) {
+    if (parseInt(location.href.split('/').slice(-1).toString()) === id) {
+      this.existentService = true;
+    } else {
+      this.bgTitle = "Adicionar novo serviço"
+      this.existentService = false;
+    }
+  }
+
+  cancel() {
+    this.modal.dismiss(null, 'cancel');
+  }
+
+  removeService() {
+    this.serviceServices.removeService(this.actualService['serviceId']).subscribe();
+    this.modal.dismiss();
+    this.router.navigate(['admin/dashboard']);
+  }
+
+  onWillDismiss() {
+    this.modal.dismiss();
   }
 
 }

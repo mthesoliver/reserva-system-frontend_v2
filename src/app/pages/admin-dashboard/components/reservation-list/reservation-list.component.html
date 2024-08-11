@@ -1,59 +1,115 @@
+<ion-toolbar *ngIf="showToolBar">
+  <ion-button (click)="openFilterOptions()">Adicionar filtros</ion-button>
+  <ion-chip [outline]="true" *ngFor="let el of filterChips">
+    {{el.value}}
+    <ion-icon name="close-circle" (click)="closeChip(el.value)"></ion-icon>
+  </ion-chip>
+</ion-toolbar>
+
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 table-list border-radius-md">
-  <!-- Position Column -->
+
   <ng-container matColumnDef="idReserva">
     <th mat-header-cell *matHeaderCellDef>ID Reserva</th>
-    <td mat-cell *matCellDef="let element">#{{element.idReserva}}</td>
+    <td mat-cell *matCellDef="let element" (click)="clickedReservation(element)">#{{element.idReserva}}</td>
   </ng-container>
 
-  <!-- Name Column -->
+  <ng-container matColumnDef="dateTimeRequest">
+    <th mat-header-cell *matHeaderCellDef>Data da solicitação</th>
+    <td mat-cell *matCellDef="let element" (click)="clickedReservation(element)">{{element.dateTimeRequest}}</td>
+  </ng-container>
+
   <ng-container matColumnDef="cliente">
     <th mat-header-cell *matHeaderCellDef>Cliente</th>
-    <td mat-cell *matCellDef="let element">{{element.cliente}}</td>
+    <td mat-cell *matCellDef="let element" (click)="clickedReservation(element)">{{element.cliente}}</td>
   </ng-container>
 
-  <!-- Weight Column -->
   <ng-container matColumnDef="servico">
-    <th mat-header-cell *matHeaderCellDef>Serviço</th>
-    <td mat-cell *matCellDef="let element">{{element.servico}}</td>
+    <th mat-header-cell *matHeaderCellDef >Serviço</th>
+    <td mat-cell *matCellDef="let element" (click)="clickedReservation(element)">{{element.servico}}</td>
   </ng-container>
 
-  <!-- Symbol Column -->
   <ng-container matColumnDef="horario">
     <th mat-header-cell *matHeaderCellDef>Horário</th>
-    <td mat-cell *matCellDef="let element">{{element.horario}}</td>
+    <td mat-cell *matCellDef="let element" (click)="clickedReservation(element)">{{element.horario}}</td>
   </ng-container>
 
   <ng-container matColumnDef="data">
     <th mat-header-cell *matHeaderCellDef>Data</th>
-    <td mat-cell *matCellDef="let element">{{element.data}}</td>
+    <td mat-cell *matCellDef="let element" (click)="clickedReservation(element)">{{element.data}}</td>
   </ng-container>
 
   <ng-container matColumnDef="situacao">
-    <th mat-header-cell *matHeaderCellDef>Situação</th>
-    <td mat-cell *matCellDef="let element">{{element.situacao}}</td>
+    <th mat-header-cell *matHeaderCellDef>Status</th>
+    <td mat-cell *matCellDef="let element" [ngClass]="setStatusColor(element)" (click)="clickedReservation(element)">
+      {{element.situacao}}</td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr
-      mat-row
-      (click)="clickedRows.add(row)"
-      [class.demo-row-is-clicked]="clickedRows.has(row)"
-      *matRowDef="let row; columns: displayedColumns;"
-  ></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 
-<!-- <div>
-  <h3>
-    Click Log
-  </h3>
-</div>
+<ion-buttons *ngIf="allowPagination" class="pagination-buttons">
+  <span class="count ion-padding-end"> Carregando {{totalItensLoad}} de {{reservationList.length}}</span>
+  <ion-button (click)="previousPage()">
+    <ion-icon name="chevron-back-outline"></ion-icon>
+  </ion-button>
+  <ion-button (click)="nextPage()">
+    <ion-icon name="chevron-forward-outline"></ion-icon>
+  </ion-button>
+</ion-buttons>
 
-@if (!clickedRows.size) {
-  <div>Clicked rows will be logged here</div>
-}
 
-<ul>
-  @for (clickedRow of clickedRows; track clickedRow) {
-    <li>Clicked on {{clickedRow.cliente}}</li>
-  }
-</ul> -->
+<ion-modal id="reservation-info">
+  <ng-template>
+    <div class=" modal-content">
+      <ion-toolbar class="modal-toolbar">
+        <ion-icon slot="end" name="close" size="large" (click)="onWillDismiss()"></ion-icon>
+      </ion-toolbar>
+
+      <section>
+        <app-reservation-detail [reservationId]="reservationId" [serviceId]="serviceId"></app-reservation-detail>
+      </section>
+    </div>
+  </ng-template>
+</ion-modal>
+
+
+<ion-modal #filterModal>
+  <ng-template>
+    <div class="modal-content">
+      <ion-toolbar class="modal-toolbar">
+        <ion-icon slot="end" name="close" size="large" (click)="filterModal.dismiss()"></ion-icon>
+      </ion-toolbar>
+
+      <section>
+        <ion-title color="primary">Selecione os parâmetros do filtro:</ion-title>
+        <div>
+          <ion-select label="Selecione o status" okText="Confirmar" cancelText="Cancelar" fill="outline" #selectStatus name="situacao">
+            <ion-select-option value="AGUARDANDO_APROVACAO">AGUARDANDO</ion-select-option>
+            <ion-select-option value="REJEITADO">REJEITADO</ion-select-option>
+            <ion-select-option value="APROVADO">APROVADO</ion-select-option>
+          </ion-select>
+        </div>
+
+        <div>
+          <ion-select label="Selecione o serviço" okText="Confirmar" cancelText="Cancelar" fill="outline" #selectService name="servico">
+            <ion-select-option value="{{el}}" *ngFor="let el of serviceNameList">{{el}}</ion-select-option>
+          </ion-select>
+        </div>
+
+        <div>
+          <ion-select label="Selecione a ordem" okText="Confirmar" cancelText="Cancelar" fill="outline" #selectTime name="dateTimeRequest">
+            <ion-select-option value="Mais recentes">Mais recentes</ion-select-option>
+            <ion-select-option value="Mais antigos">Mais antigos</ion-select-option>
+          </ion-select>
+        </div>
+
+        <ion-buttons class="ion-justify-content-between ion-padding-top">
+          <ion-button fill="outline" color="danger" (click)="cancel()">Cancelar</ion-button>
+          <ion-button fill="solid" color="primary" (click)="filterBy(selectStatus, selectService, selectTime)">Confirmar</ion-button>
+        </ion-buttons>
+      </section>
+
+    </div>
+  </ng-template>
+</ion-modal>

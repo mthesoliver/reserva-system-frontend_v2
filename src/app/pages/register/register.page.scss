@@ -23,3 +23,123 @@ h1{
 ion-icon {
     color: #adadad;
 }
+
+ion-content{
+    --padding-top: 20px;
+}
+
+.bg-color{
+    --background: #12141D!important;
+}
+
+.login-container{
+    max-width: 90%;
+    position: relative;
+    margin: auto;
+    display: flex;
+    background-image: url(http://localhost:8080/resource/pic/db/jaReserva_login_bg.webp);
+    background-repeat: no-repeat;
+    background-size: 110%;
+    background-position: 50% 50%;
+    border-radius: 26px;
+    padding: 1.5rem
+} 
+
+.login-form form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 26px;
+    background-color: #f9f9f9;
+    padding-inline:3rem;
+}
+
+.login-form form h2{
+    text-align: center;
+    font-size: 36px;
+    color: var(--ion-color-primary)
+}
+
+.login-form form p{
+    text-align: center;
+    font-size: 12px;
+    line-height: 16px;
+    padding-inline:2rem;
+}
+
+.login-img{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 3rem
+}
+
+.main-logo{
+    color: #fff!important;
+    font-size: 80px !important;
+}
+
+.hide{
+    display: none;
+}
+
+
+
+/** MOBILE **/
+@media screen and (max-width:768px) {    
+    h1{
+        font-weight: 900;
+        font-size: 2.5rem;
+    }    
+    
+    ion-content{
+        --padding-top: 0px;
+    }
+    
+    .login-container{
+        max-width: 100%!important;
+        height: 100vh;
+        width: 100vw;
+        background-image: url(http://localhost:8080/resource/pic/db/jaReserva_login_bg.webp);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: left center;
+        border-radius: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    } 
+    
+    .login-form form{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-radius: 26px;
+        background-color: #f9f9f9;
+        padding-inline:1rem;
+        max-width: fit-content;
+    }
+    
+    .login-form form h2{
+        text-align: center;
+        font-size: 32px;
+        color: var(--ion-color-primary)
+    }
+
+    .login-container ion-col{
+        max-height: fit-content;
+        max-width: 80vw !important;
+        width: 100% !important;
+        flex: 0 0 auto !important;
+        padding: 0!important;
+        margin: 0!important;
+    }
+    
+    .main-logo{
+        color: #fff!important;
+        font-size: 70px !important;
+    }
+    
+}

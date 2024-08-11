@@ -1,0 +1,16 @@
+[[headers]]
+for = "/*"
+[headers.values]
+Access-Control-Allow-Origin = "*"
+Access-Control-Allow-Methods = "*"
+Access-Control-Allow-Headers = "*"
+
+[[redirects]]
+from = "/*"
+to = "index.html"
+status = 200
+
+[[redirects]]
+from = "index.html/login"
+to = "https://reserva-gateway-production.up.railway.app"
+status = 200

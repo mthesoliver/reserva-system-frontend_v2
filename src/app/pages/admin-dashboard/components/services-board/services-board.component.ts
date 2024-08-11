@@ -1,9 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SharedModule } from 'src/app/modules/common-module/shared';
-import { ResourceService } from 'src/app/services/resource.service';
-import { ServicesService } from 'src/app/services/services.service';
-import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-services-board',
@@ -23,15 +20,26 @@ export class ServicesBoardComponent implements OnInit {
   @Input()
   timeWork: string;
 
+  isAdmin:boolean
 
-  constructor(private router:Router
-    //private service: ServicesService, private resourceService: ResourceService, private userService: UsersService
-    ) {}
+
+  constructor(private router:Router) {}
 
   ngOnInit() {
+    if(localStorage.getItem('role') === "ADMIN"){
+      this.isAdmin = true
+    }
   }
 
-  onClick(serviceId){
-    this.router.navigate([`admin/services/${serviceId}`])
+  onClick(){
+    this.router.navigate(['admin/services', this.serviceId]);
+  }
+
+  toDetails(){
+    this.router.navigate(['admin/services/details', this.serviceId])
+  }
+
+  goToCalendar(){
+    this.router.navigate([`page/${location.href.split('/').slice(-1).toString()}/${this.serviceId}`]);
   }
 }

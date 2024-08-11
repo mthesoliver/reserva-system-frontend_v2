@@ -14,12 +14,13 @@
     border-color: currentColor;
 }
 
-.mat-mdc-header-row{
+.mat-mdc-header-row {
     background-color: #F2F2F2;
 }
 
-th, td{
-    color:#676767;
+th,
+td {
+    color: #676767;
 }
 
 // .demo-row-is-clicked {
@@ -31,5 +32,90 @@ th, td{
     table {
         width: 10% !important;
     }
-    
+
+    .pagination-buttons{
+        position: absolute;
+        z-index: 99;
+        height: 140px;
+        right: 20px;
+    }
+
+    ion-modal app-reservation-detail{
+        padding-inline: 0 15px!important;
+        padding-top: 20px!important;
+        margin-top: 1rem!important;
+    }
+
+}
+
+.aguardando {
+    color: var(--ion-color-warning-shade);
+}
+
+.aprovado {
+    color: var(--ion-color-success);
+}
+
+.rejeitado {
+    color: var(--ion-color-danger);
+}
+
+
+.pagination-buttons {
+    display: flex;
+    justify-content: end;
+    color: #858585;
+    transition: .6s;
+    margin-block: -1rem 2rem;
+
+    ion-button{ 
+        --border-style: solid;
+        --border-width: 1px;
+        --border-color: #85858533;
+        --border-radius: 4px;
+        --padding-end:1.225rem;
+        --padding-start:1.225rem;
+        --padding-top:.825rem;
+        --padding-bottom:.825rem;
+        transition: .6s;
+    }
+}
+
+.pagination-buttons:hover {
+    transition: .6s;
+
+    ion-button:hover:not(.count){
+        color: var(--ion-color-primary);
+        --border-color: var(--ion-color-primary);
+        transition: .6s;
+    }
+}
+
+ion-button.count{
+    cursor: none !important;
+    --border-style: none !important;
+    --border-width: 0 !important;
+}
+
+ion-modal{
+    --max-width:440px;
+    --min-width:300px;
+    --height:480px;
+    --border-radius:var(--border-radius-md);
+}
+
+#reservation-info{
+    --max-width: 440px!important;
+    --height:fit-content!important;
+    --border-radius:var(--border-radius-md);
+}
+
+ion-modal app-reservation-detail{
+    background: #f9f9f9;
+    border: 1px solid #e2e2e2!important;
+    border-radius: 20px;
+    padding-inline: 30px 40px;
+    padding-bottom: 30px;
+    display: flex;
+    scale:.95;
 }

@@ -17,15 +17,98 @@
     }
 }
 
-.service-card:hover{
+.service-card:hover {
     background-color: #F9F9F9;
     transition: cubic-bezier(0.075, 0.82, 0.165, 1) .6s;
 }
 
+/** tooltip **/
+.header-container {
+    display: flex;
+    width: 100%;
+    align-items: end;
+    padding-bottom: 0 !important;
+    padding-top: 0 !important;
+    margin-top: -1rem;
+}
+
+.edit-icon {
+    width: 1.6rem;
+    padding-left: 100px !important;
+    cursor: pointer;
+}
+
+.edit-icon:hover {
+    color: var(--ion-color-secondary);
+}
+
+
+.edit-icon:before {
+    content: 'Editar Serviço';
+    font-size: 12px;
+    position: absolute;
+    left: 100px;
+    top: .125rem;
+    transition: .4s;
+    opacity: 0;
+    z-index: -1;
+    border-radius: 4px;
+}
+
+.edit-icon:after {
+    content: '';
+    position: absolute;
+    right: -100px;
+    top: .630rem;
+    transition: .4s;
+    opacity: 0;
+    width: 12px;
+    height: 12px;
+    transform: rotate(45deg);
+    z-index: -2;
+}
+
+.edit-icon:hover:before {
+    position: absolute;
+    left: 0;
+    top: .125rem;
+    transition: .4s;
+    opacity: 1;
+    color: #949494;
+    background-color: #e5e5e5;
+    padding: 5px;
+    z-index: -1;
+    border-radius: 4px;
+}
+
+.edit-icon:hover:after {
+    content: '';
+    position: absolute;
+    right: 35px;
+    top: .630rem;
+    transition: .4s;
+    opacity: 1;
+    background-color: #e5e5e5;
+    width: 12px;
+    height: 12px;
+    transform: rotate(45deg);
+    z-index: -2;
+}
+
+
+
 /** media **/
-@media screen and (max-width:768px){
-    .service-card{
+@media screen and (max-width:768px) {
+    .service-card {
         margin-top: 0;
         padding-top: 0;
+    }
+
+    ion-card-title{
+        font-size: calc((var(--font-lg) * 1.125)) !important;
+    }
+
+    ion-card-subtitle{
+        font-size: calc((var(--font-md) * 1.225)) !important;
     }
 }

@@ -17,7 +17,23 @@ export class ServicesService {
     return this.httpClient.get<any>(`/resource/services/${id}`)
   }
 
+  getServicesByOwner(id:number):Observable<any>{
+    return this.httpClient.get<any>(`/resource/services/by/${id}/list`);
+  }
+  
+  getServicesByName(serviceName: any): Observable<any>  {
+    return this.httpClient.get<any>(`/resource/services/by/${serviceName}`)
+  }
+
   updateServiceById(updatedService):Observable<any>{
     return this.httpClient.put<any>(`resource/services`, updatedService)
+  }
+
+  insertNewService(newService):Observable<any>{
+    return this.httpClient.post<any>(`resource/services`, newService)
+  }
+
+  removeService(id: number): Observable<any> {
+    return this.httpClient.delete<any>(`/resource/services/${id}`)
   }
 }

@@ -5,7 +5,8 @@ const config: CapacitorConfig = {
   appName: 'reserva-system-frontend',
   webDir: 'www',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    hostname: '0.0.0.0'
   }
 };
 

@@ -21,7 +21,7 @@ export class IsAdminGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     
-      if(localStorage.getItem('role') == "ADMIN"){
+      if(localStorage.getItem('role') === "ADMIN"){
         this.canAccessRoute=true;
         return this.canAccessRoute
       }else{
