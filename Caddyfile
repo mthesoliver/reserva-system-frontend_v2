@@ -34,7 +34,7 @@
         header_up X-Forwarded-Proto {http.request.scheme}
     }
 
-    handle @corsOptions {
+    handle @cors {
         header {
             Access-Control-Allow-Origin *
             Access-Control-Allow-Methods *
