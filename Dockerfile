@@ -18,8 +18,10 @@ RUN npm install -g @angular/cli
 COPY . /usr/local/app
 
 # Compila a aplicação Ionic (opcional, dependendo da configuração do seu projeto)
-# RUN ng build --optimization=false
-RUN ng build --configuration development
+RUN ng build --optimization=false
+# RUN ng build --configuration development
+
+CMD [ "ng", "serve", "-c", "production",  "--port", "4200", "--host", "0.0.0.0"]
 
 # # Use official nginx image as the base image
 # FROM nginx:latest
@@ -27,5 +29,5 @@ RUN ng build --configuration development
 # # Copy the build output to replace the default nginx contents.
 # COPY --from=build /usr/local/app/www /usr/share/nginx/html
 
-# # Exponha a porta em que a aplicação vai rodar
-# EXPOSE 4200
+# Exponha a porta em que a aplicação vai rodar
+EXPOSE 4200
