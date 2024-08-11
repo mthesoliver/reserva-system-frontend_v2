@@ -21,11 +21,11 @@ COPY . /usr/local/app
 # RUN ng build --optimization=false
 RUN ng build --configuration development
 
-# Use official nginx image as the base image
-FROM nginx:latest
+# # Use official nginx image as the base image
+# FROM nginx:latest
 
-# Copy the build output to replace the default nginx contents.
-COPY --from=build /usr/local/app/www /usr/share/nginx/html
+# # Copy the build output to replace the default nginx contents.
+# COPY --from=build /usr/local/app/www /usr/share/nginx/html
 
-# Exponha a porta em que a aplicação vai rodar
-EXPOSE 4200
+# # Exponha a porta em que a aplicação vai rodar
+# EXPOSE 4200
