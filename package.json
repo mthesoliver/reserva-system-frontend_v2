@@ -7,7 +7,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --optimization=false",
-    "buildev": "ng build --configuration=development",
+    "buildev": "ng build --configuration development",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",

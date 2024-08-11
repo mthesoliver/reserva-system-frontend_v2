@@ -18,7 +18,8 @@ RUN npm install -g @angular/cli
 COPY . /usr/local/app
 
 # Compila a aplicação Ionic (opcional, dependendo da configuração do seu projeto)
-RUN ng build --optimization=false
+# RUN ng build --optimization=false
+RUN ng build --configuration development
 
 # Use official nginx image as the base image
 FROM nginx:latest
