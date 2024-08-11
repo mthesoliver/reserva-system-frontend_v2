@@ -2,19 +2,23 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonApp, IonRouterOutlet, IonNav, IonBackButton } from '@ionic/angular/standalone';
 import { MenuComponent } from "./components/menu/menu.component";
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { filter } from 'rxjs/operators';
 import { ResourceService } from './services/resource.service';
 import { UsersService } from './services/users.service';
 import { CriptoService } from './services/cripto.service';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   standalone: true,
   imports: [IonBackButton, IonNav, IonApp, IonRouterOutlet, MenuComponent, HttpClientModule],
-  providers: [
-  ]
+  providers:[{
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi: true
+  }]
 })
 export class AppComponent implements OnInit {
   @ViewChild('menu') menu: MenuComponent;

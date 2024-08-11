@@ -10,6 +10,8 @@
 	# server options
 	servers {
 		trusted_proxies static private_ranges 100.0.0.0/8 # trust railway's proxy
+		client_ip_headers X-Forwarded-For X-Real-IP
+		log_credentials
 	}
 }
 
@@ -26,6 +28,33 @@
 	# serve from the set folder
 	root * {$ANGULAR_OUTPUT_PATH}
 
+	reverse_proxy /* https://reserva-gateway-production.up.railway.app {
+        header_up Authorization {http.request.header.Authorization}
+        header_up X-Forwarded-For {http.request.header.X-Forwarded-For}
+        header_up X-Forwarded-Proto {http.request.scheme}
+    }
+	
+	@corsOptions method OPTIONS
+    handle @corsOptions {
+        header {
+            Access-Control-Allow-Origin *
+            Access-Control-Allow-Methods GET, POST, PUT, DELETE, OPTIONS
+            Access-Control-Allow-Headers Content-Type, Authorization, X-Requested-With, X-CSRF-Token
+        }
+        respond "CORS preflight response" 204
+    }
+
+	header {
+		# CORS headers
+		Access-Control-Allow-Origin *
+		Access-Control-Allow-Methods *
+		Access-Control-Allow-Headers *
+		Access-Control-Allow-Credentials true
+
+		# Authorization headers
+		# Authorization "Basic {base64(reserva-com:secret)}"
+	}
+	
 	# enable gzipping responses
 	encode gzip
 
