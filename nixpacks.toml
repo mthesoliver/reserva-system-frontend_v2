@@ -8,6 +8,7 @@
 # setup phase where we add any needed packages
 [phases.setup]
     nixPkgs = ['...', 'jq'] # jq is needed to parse the outputPath from our angular.json file
+    cmds= ['npm install --legacy-peer-deps']
 
 # get the output path from our angular.json file
 [phases.output]
@@ -15,6 +16,10 @@
     cmds = [
         'jq -r "[.projects[] | .architect.build.options.outputPath][0]" angular.json > angular_output_path' # save the resulting value into a file so that we can load the file into a variable in the final image
     ]
+
+[phases.build]
+    dependsOn = ['output'] # make sure this phase runs after the 'output' phase
+    cmds = ['npm run buildev']
 
 # download caddy from nix
 [phases.caddy]
