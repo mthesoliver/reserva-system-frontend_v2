@@ -47,7 +47,7 @@
 		Access-Control-Allow-Credentials true
 
 		# Authorization headers
-		Authorization "Basic cmVzZXJ2YS1jb206c2VjcmV0"
+		# Authorization "Basic cmVzZXJ2YS1jb206c2VjcmV0"
 	}
 	
 	# enable gzipping responses
